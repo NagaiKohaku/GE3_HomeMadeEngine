@@ -16,11 +16,11 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "Vector.h"
-#include "Log.h"
-#include "Pipeline.h"
-#include "Vector3Math.h"
-#include "ResourceObject.h"
+#include "math/Vector.h"
+#include "others/Log.h"
+#include "math/Pipeline.h"
+#include "math/Vector3Math.h"
+#include "others/ResourceObject.h"
 #include "externals/imgui/imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
