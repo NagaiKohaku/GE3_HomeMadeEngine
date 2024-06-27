@@ -34,9 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
-    <None Include="resources\shaders\Object3d.hlsli">
-      <Filter>リソース ファイル\shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -130,6 +127,9 @@
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
     <FxCompile Include="resources\shaders\Object3d.VS.hlsl">
+      <Filter>リソース ファイル\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="resources\shaders\Object3d.hlsli">
       <Filter>リソース ファイル\shaders</Filter>
     </FxCompile>
   </ItemGroup>

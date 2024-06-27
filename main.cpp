@@ -73,6 +73,8 @@ struct DirectionalLight {
 struct D3DResourceLeakChecker {
 	~D3DResourceLeakChecker() {
 
+#ifdef _DEBUG
+
 		//リソースリークチェック
 		Microsoft::WRL::ComPtr<IDXGIDebug1> debug;
 
@@ -87,6 +89,7 @@ struct D3DResourceLeakChecker {
 			debug->Release();
 		}
 
+#endif
 	}
 };
 
