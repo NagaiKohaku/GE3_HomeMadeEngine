@@ -7,18 +7,22 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
-using namespace Microsoft::WRL;
-
 class Input {
 
 public:
 
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
 	static Input* GetInstance();
 
-	void Initialize(HINSTANCE hInstance,HWND hwnd);
+	void Initialize(HINSTANCE hInstance, HWND hwnd);
 
 	void Update();
 
 private:
+
+	ComPtr<IDirectInput8> directInput_ = nullptr;
+
+	ComPtr<IDirectInputDevice8> keyboard_;
 
 };

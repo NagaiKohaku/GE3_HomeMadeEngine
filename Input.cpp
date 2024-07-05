@@ -2,26 +2,22 @@
 #include "cassert"
 
 Input* Input::GetInstance() {
-	static Input* instance;
-	return instance;
+	static Input instance;
+	return &instance;
 }
 
 void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 
 	HRESULT result;
 
-	ComPtr<IDirectInput8> directInput_ = nullptr;
-
 	//DirectInputのインスタンス生成
 	result = DirectInput8Create(
 		hInstance,
 		DIRECTINPUT_VERSION,
 		IID_IDirectInput8,
-		(void**)&directInput_,
+		reinterpret_cast<void**>(directInput_.GetAddressOf()),
 		nullptr
 	);
-
-	ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
 
 	//キーボードデバイス生成
 	result = directInput_->CreateDevice(
@@ -46,5 +42,10 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 }
 
 void Input::Update() {
+
+	//キーボード情報の取得開始
+	keyboard_->Acquire();
+	BYTE key[256] = {};
+	keyboard_->GetDeviceState(sizeof(key), key);
 
 }
