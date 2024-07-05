@@ -28,6 +28,8 @@
 #include "externals/DirectXTex/d3dx12.h"
 #pragma warning(pop)
 
+#include "Input.h"
+
 //頂点データ
 struct VertexData {
 	Vector4 position;
@@ -258,6 +260,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// ウィンドウを作成する (終了) ///
 	///                        ///
 
+	Input* input = Input::GetInstance();
+
+	input->Initialize(wc.hInstance,hwnd);
 
 	///                  ///
 	/// DirectX12の初期化 ///
