@@ -931,6 +931,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0.0f,0.0f,0.0f},
 	};
 
+	float speed = 0.1f;
+
 	//ライトの輝度
 	float lightIntensity = 1.0f;
 
@@ -1021,6 +1023,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui_ImplWin32_NewFrame();
 			ImGui::NewFrame();
 
+			//Inputクラスの更新
+			input->Update();
+
+			if (input->PushKey(DIK_W)) {
+				transformModel.translate.y += speed;
+			}
+			if (input->PushKey(DIK_S)) {
+				transformModel.translate.y -= speed;
+			}
+			if (input->PushKey(DIK_D)) {
+				transformModel.translate.x += speed;
+			}
+			if (input->PushKey(DIK_A)) {
+				transformModel.translate.x -= speed;
+			}
+
 			/*Modelの作成*/
 
 			Matrix4x4 worldMatrixModel = Pipeline::MakeAffineMatrix(transformModel.scale, transformModel.rotate, transformModel.translate);
@@ -1082,6 +1100,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				ImGui::TreePop();
 			}
+
+			ImGui::Text("\n WASD : Move Model");
 
 			//ImGuiの終了
 			ImGui::End();

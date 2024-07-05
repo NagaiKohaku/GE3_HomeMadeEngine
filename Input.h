@@ -19,10 +19,14 @@ public:
 
 	void Update();
 
+	bool PushKey(BYTE keyNumber);
+
 private:
 
 	ComPtr<IDirectInput8> directInput_ = nullptr;
 
 	ComPtr<IDirectInputDevice8> keyboard_;
+
+	BYTE key[256] = {};
 
 };
