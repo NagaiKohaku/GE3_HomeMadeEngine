@@ -82,10 +82,28 @@ void WinApp::Initialize() {
 
 }
 
-
 void WinApp::Finalize() {
 
 	CloseWindow(hwnd_);
 	CoUninitialize();
 
+}
+
+bool WinApp::ProcessMessage() {
+
+	//ウィンドウへのアクションの情報を受け取る
+	MSG msg{};
+
+	//Windowにメッセージが来てたら最優先で処理させる
+	if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+
+	if (msg.message == WM_QUIT) {
+		return true;
+	}
+
+	return false;
 }
