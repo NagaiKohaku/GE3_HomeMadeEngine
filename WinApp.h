@@ -18,6 +18,8 @@ public:
 
 	void Initialize();
 
+	void Finalize();
+
 	HINSTANCE GetHInstance() const { return wc_.hInstance; }
 
 	HWND GetHwnd() const { return hwnd_; }

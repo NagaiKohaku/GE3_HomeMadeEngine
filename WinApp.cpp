@@ -81,3 +81,11 @@ void WinApp::Initialize() {
 	ShowWindow(hwnd_, SW_SHOW);
 
 }
+
+
+void WinApp::Finalize() {
+
+	CloseWindow(hwnd_);
+	CoUninitialize();
+
+}

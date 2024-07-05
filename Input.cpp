@@ -1,4 +1,5 @@
 #include "Input.h"
+#include "WinApp.h"
 #include "cassert"
 
 Input* Input::GetInstance() {
@@ -6,13 +7,15 @@ Input* Input::GetInstance() {
 	return &instance;
 }
 
-void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
+void Input::Initialize() {
 
 	HRESULT result;
 
+	winApp_ = WinApp::GetInstance();
+
 	//DirectInputのインスタンス生成
 	result = DirectInput8Create(
-		hInstance,
+		winApp_->GetHInstance(),
 		DIRECTINPUT_VERSION,
 		IID_IDirectInput8,
 		reinterpret_cast<void**>(directInput_.GetAddressOf()),
@@ -33,7 +36,7 @@ void Input::Initialize(HINSTANCE hInstance, HWND hwnd) {
 
 	//排他制御レベルのセット
 	result = keyboard_->SetCooperativeLevel(
-		hwnd,
+		winApp_->GetHwnd(),
 		DISCL_FOREGROUND |
 		DISCL_NONEXCLUSIVE |
 		DISCL_NOWINKEY

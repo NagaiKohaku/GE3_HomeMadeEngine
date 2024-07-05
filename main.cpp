@@ -189,7 +189,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Input* input = Input::GetInstance();
 
-	input->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
+	input->Initialize();
 
 	///                  ///
 	/// DirectX12の初期化 ///
@@ -1207,9 +1207,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///               ///
 
 
-	//COMの終了処理
-	CoUninitialize();
-
 	/*各オブジェクトの開放処理*/
 
 	ImGui_ImplDX12_Shutdown();
@@ -1218,7 +1215,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//生成した順に開放していく
 	CloseHandle(fenceEvent);
-	CloseWindow(winApp->GetHwnd());
+
+	winApp->Finalize();
 
 	/*開放処理のチェック*/
 

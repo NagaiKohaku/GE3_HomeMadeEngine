@@ -7,6 +7,8 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
+class WinApp;
+
 class Input {
 
 public:
@@ -15,13 +17,15 @@ public:
 
 	static Input* GetInstance();
 
-	void Initialize(HINSTANCE hInstance, HWND hwnd);
+	void Initialize();
 
 	void Update();
 
 	bool PushKey(BYTE keyNumber);
 
 private:
+
+	WinApp* winApp_ = nullptr;
 
 	ComPtr<IDirectInput8> directInput_ = nullptr;
 
