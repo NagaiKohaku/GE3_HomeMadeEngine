@@ -28,6 +28,7 @@
 #include "externals/DirectXTex/d3dx12.h"
 #pragma warning(pop)
 
+#include "WinApp.h"
 #include "Input.h"
 
 //頂点データ
@@ -178,7 +179,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 #endif // _DEBUG
 
+	WinApp* winApp = WinApp::GetInstance();
 
+	winApp->Initialize();
 
 	///                        ///
 	/// ウィンドウを作成する (終了) ///
@@ -186,7 +189,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	Input* input = Input::GetInstance();
 
-	input->Initialize(wc.hInstance,hwnd);
+	input->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
 
 	///                  ///
 	/// DirectX12の初期化 ///
@@ -393,8 +396,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 
 	//スワップチェーンの設定
-	swapChainDesc.Width = kClientWidth;                          //画面の幅。ウィンドウのクライアント領域と同じものにしておく
-	swapChainDesc.Height = kClientHeight;                        //画面の高さ。ウィンドウのクライアント領域と同じものにしておく
+	swapChainDesc.Width = WinApp::kClientWidth;                          //画面の幅。ウィンドウのクライアント領域と同じものにしておく
+	swapChainDesc.Height = WinApp::kClientHeight;                        //画面の高さ。ウィンドウのクライアント領域と同じものにしておく
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;           //色の形式
 	swapChainDesc.SampleDesc.Count = 1;                          //マルチサンプルしない
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; //描画のターゲットとして利用する
@@ -403,7 +406,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//スワップチェーンを生成する
 	//コマンドキュー、ウィンドウハンドル、設定を渡して生成する
-	hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue.Get(), hwnd, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf()));
+	hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue.Get(), winApp->GetHwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain.GetAddressOf()));
 
 	//スワップチェーンの生成がうまくいったかの確認
 	assert(SUCCEEDED(hr));
@@ -821,8 +824,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	D3D12_VIEWPORT viewport{};
 
 	//クライアント領域のサイズと一緒にして画面全体に表示
-	viewport.Width = static_cast<FLOAT>(kClientWidth);
-	viewport.Height = static_cast<FLOAT>(kClientHeight);
+	viewport.Width = static_cast<FLOAT>(WinApp::kClientWidth);
+	viewport.Height = static_cast<FLOAT>(WinApp::kClientHeight);
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.MinDepth = 0.0f;
@@ -833,9 +836,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//基本的にビューポートと同じく矩形が編成されるようにする
 	scissorRect.left = 0;
-	scissorRect.right = kClientWidth;
+	scissorRect.right = WinApp::kClientWidth;
 	scissorRect.top = 0;
-	scissorRect.bottom = kClientHeight;
+	scissorRect.bottom = WinApp::kClientHeight;
 
 	///                    ///
 	/// GPU操作の下準備(終了) ///
@@ -868,7 +871,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const DirectX::TexMetadata& metadata = mipImages.GetMetadata();
 	ResourceObject textureResource = CreateTextureResource(device.Get(), metadata);
 
-	ResourceObject depthStencilResource = CreateDepthStencilTextureResource(device.Get(), kClientWidth, kClientHeight);
+	ResourceObject depthStencilResource = CreateDepthStencilTextureResource(device.Get(), WinApp::kClientWidth, WinApp::kClientHeight);
 
 	ResourceObject intermediateResource = UploadTextureData(textureResource.Get(), mipImages, device.Get(), commandList.Get());
 
@@ -889,7 +892,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(hwnd);
+	ImGui_ImplWin32_Init(winApp->GetHwnd());
 	ImGui_ImplDX12_Init(
 		device.Get(),
 		swapChainDesc.BufferCount,
@@ -967,7 +970,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Matrix4x4 worldMatrixModel = Pipeline::MakeAffineMatrix(transformModel.scale, transformModel.rotate, transformModel.translate);
 			Matrix4x4 viewMatrixModel = Pipeline::Inverse(Pipeline::MakeAffineMatrix(transformCamera.scale, transformCamera.rotate, transformCamera.translate));
-			Matrix4x4 projectionMatrixModel = Pipeline::MakePerspectiveFovMatrix(0.45f, float(kClientWidth) / float(kClientHeight), 0.1f, 100.0f);
+			Matrix4x4 projectionMatrixModel = Pipeline::MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
 			Matrix4x4 worldProjectionMatrixModel = Pipeline::Multiply(worldMatrixModel, Pipeline::Multiply(viewMatrixModel, projectionMatrixModel));
 
 			wvpDataModel->WVP = worldProjectionMatrixModel;
@@ -1215,7 +1218,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//生成した順に開放していく
 	CloseHandle(fenceEvent);
-	CloseWindow(hwnd);
+	CloseWindow(winApp->GetHwnd());
 
 	/*開放処理のチェック*/
 

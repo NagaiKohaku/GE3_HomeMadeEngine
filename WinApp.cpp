@@ -1,16 +1,9 @@
 #include "WinApp.h"
 #include "cassert"
 #include "wrl.h"
-#include "cstdint"
 #include "externals/imgui/imgui.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-//ウィンドウの横幅
-int32_t kClientWidth = 1280;
-
-//ウィンドウの縦幅
-int32_t kClientHeight = 720;
 
 LRESULT CALLBACK WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
@@ -41,23 +34,23 @@ WinApp* WinApp::GetInstance() {
 
 void WinApp::Initialize() {
 
-	//ウィンドウクラス
-	WNDCLASS wc{};
+	//テクスチャのためのCOMの初期化
+	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
 	//ウィンドウプロシージャ
-	wc.lpfnWndProc = WindowProc;
+	wc_.lpfnWndProc = WindowProc;
 
 	//ウィンドウクラス名
-	wc.lpszClassName = L"WindowClass";
+	wc_.lpszClassName = L"WindowClass";
 
 	//インスタンスハンドル
-	wc.hInstance = GetModuleHandle(nullptr);
+	wc_.hInstance = GetModuleHandle(nullptr);
 
 	//カーソル
-	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wc_.hCursor = LoadCursor(nullptr, IDC_ARROW);
 
 	//ウィンドウクラスを登録する
-	RegisterClass(&wc);
+	RegisterClass(&wc_);
 
 	/*ウィンドウの設定*/
 
@@ -68,8 +61,8 @@ void WinApp::Initialize() {
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
 	//ウィンドウの生成
-	HWND hwnd = CreateWindow(
-		wc.lpszClassName,           //利用するクラス名
+	hwnd_ = CreateWindow(
+		wc_.lpszClassName,           //利用するクラス名
 		L"LE2B_17_ナガイ_コハク",     //タイトルバーの文字
 		WS_OVERLAPPEDWINDOW,        //よく見るウィンドウスタイル
 		CW_USEDEFAULT,              //表示X座標(Windowsに任せる)
@@ -78,13 +71,13 @@ void WinApp::Initialize() {
 		wrc.bottom - wrc.top,       //ウィンドウ縦幅
 		nullptr,                    //親ウィンドウハンドル
 		nullptr,                    //メニューハンドル
-		wc.hInstance,               //インスタンスハンドル
+		wc_.hInstance,               //インスタンスハンドル
 		nullptr                     //オプション
 	);
 
 	/*ウィンドウを表示する*/
 
 	//hwndの設定をもとにウィンドウを生成する
-	ShowWindow(hwnd, SW_SHOW);
+	ShowWindow(hwnd_, SW_SHOW);
 
 }
