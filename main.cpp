@@ -95,19 +95,6 @@ struct D3DResourceLeakChecker {
 	}
 };
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-/// <summary>
-/// ウィンドウプロシージャ
-/// ウィンドウへのアクションを処理するための関数
-/// </summary>
-/// <param name="hwnd">ウィンドウハンドル</param>
-/// <param name="msg">メッセージコード</param>
-/// <param name="wparam">最小化、最大化、サイズ変更されたかを表すフラグ</param>
-/// <param name="lparam">ウィンドウの新しい幅と高さ</param>
-/// <returns></returns>
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-
 /// <summary>
 /// シェーダファイルをコンパイルするための関数
 /// </summary>
@@ -171,66 +158,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(ID3D12DescriptorHeap* descrip
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	//テクスチャのためのCOMの初期化
-	assert(SUCCEEDED(CoInitializeEx(0, COINIT_MULTITHREADED)));
-
 	D3DResourceLeakChecker leakCheck;
-
-	///                  ///
-	/// ウィンドウを作成する ///
-	///                  ///
-
-
-	/*ウィンドウクラスを登録する*/
-
-	//ウィンドウの横幅
-	int32_t kClientWidth = 1280;
-
-	//ウィンドウの縦幅
-	int32_t kClientHeight = 720;
-
-	//ウィンドウプロシージャの設定をWindowsに教えなければならないため、ウィンドウクラスの設定をする
-
-	//ウィンドウクラス
-	WNDCLASS wc{};
-
-	//ウィンドウプロシージャ
-	wc.lpfnWndProc = WindowProc;
-
-	//ウィンドウクラス名
-	wc.lpszClassName = L"WindowClass";
-
-	//インスタンスハンドル
-	wc.hInstance = GetModuleHandle(nullptr);
-
-	//カーソル
-	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-
-	//ウィンドウクラスを登録する
-	RegisterClass(&wc);
-
-	/*ウィンドウの設定*/
-
-	//ウィンドウサイズを表す構造体にクライアント領域を入れる
-	RECT wrc = { 0,0,kClientWidth,kClientHeight };
-
-	//クライアント領域を元に実際のサイズにwrcを変更してもらう
-	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
-
-	//ウィンドウの生成
-	HWND hwnd = CreateWindow(
-		wc.lpszClassName,           //利用するクラス名
-		L"LE2B_17_ナガイ_コハク",     //タイトルバーの文字
-		WS_OVERLAPPEDWINDOW,        //よく見るウィンドウスタイル
-		CW_USEDEFAULT,              //表示X座標(Windowsに任せる)
-		CW_USEDEFAULT,              //表示Y座標(WindowsOSに任せる)
-		wrc.right - wrc.left,       //ウィンドウ横幅
-		wrc.bottom - wrc.top,       //ウィンドウ縦幅
-		nullptr,                    //親ウィンドウハンドル
-		nullptr,                    //メニューハンドル
-		wc.hInstance,               //インスタンスハンドル
-		nullptr                     //オプション
-	);
 
 #ifdef _DEBUG
 
@@ -250,10 +178,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	}
 #endif // _DEBUG
 
-	/*ウィンドウを表示する*/
-
-	//hwndの設定をもとにウィンドウを生成する
-	ShowWindow(hwnd, SW_SHOW);
 
 
 	///                        ///
@@ -1300,28 +1224,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///                     ///
 
 	return 0;
-}
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-
-	//ImGuiのウィンドウを操作するときに通る
-	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
-		return true;
-	}
-
-	//メッセージに応じてゲーム固有の処理を行う
-	switch (msg) {
-
-		//ウィンドウが破棄された
-	case WM_DESTROY:
-
-		//OSに対して、アプリの終了を伝える
-		PostQuitMessage(0);
-		return 0;
-	}
-
-	//標準のメッセージ処理を行う
-	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
 IDxcBlob* CompileShader(
