@@ -1,12 +1,12 @@
 #include "Log.h"
 
 //デバッグログを出力する関数
-void Log::OutPut(const std::string& message) {
+void OutPutLog(const std::string& message) {
 	OutputDebugStringA(message.c_str());
 }
 
 //std::stringをstd::wstringに変換する関数
-std::wstring Log::ConvertString(const std::string& str) {
+std::wstring ConvertString(const std::string& str) {
 	if (str.empty()) {
 		return std::wstring();
 	}
@@ -21,7 +21,7 @@ std::wstring Log::ConvertString(const std::string& str) {
 }
 
 //std::wstringをstd::stringに変換する関数
-std::string Log::ConvertString(const std::wstring& str) {
+std::string ConvertString(const std::wstring& str) {
 	if (str.empty()) {
 		return std::string();
 	}

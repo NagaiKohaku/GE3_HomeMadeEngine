@@ -360,7 +360,7 @@ void ImGui::ShowDemoWindow(bool* p_open)
             IMGUI_DEMO_MARKER("Menu/Examples");
             ImGui::MenuItem("Main menu bar", NULL, &show_app_main_menu_bar);
             ImGui::MenuItem("Console", NULL, &show_app_console);
-            ImGui::MenuItem("Log", NULL, &show_app_log);
+            ImGui::MenuItem("OutPutLog", NULL, &show_app_log);
             ImGui::MenuItem("Simple layout", NULL, &show_app_layout);
             ImGui::MenuItem("Property editor", NULL, &show_app_property_editor);
             ImGui::MenuItem("Long text display", NULL, &show_app_long_text);
@@ -383,7 +383,7 @@ void ImGui::ShowDemoWindow(bool* p_open)
             const bool has_debug_tools = false;
 #endif
             ImGui::MenuItem("Metrics/Debugger", NULL, &show_app_metrics, has_debug_tools);
-            ImGui::MenuItem("Debug Log", NULL, &show_app_debug_log, has_debug_tools);
+            ImGui::MenuItem("Debug OutPutLog", NULL, &show_app_debug_log, has_debug_tools);
             ImGui::MenuItem("Stack Tool", NULL, &show_app_stack_tool, has_debug_tools);
             ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
             ImGui::MenuItem("About Dear ImGui", NULL, &show_app_about);
@@ -509,7 +509,7 @@ void ImGui::ShowDemoWindow(bool* p_open)
             HelpMarker(
                 "The logging API redirects all text output so you can easily capture the content of "
                 "a window or a block. Tree nodes can be automatically expanded.\n"
-                "Try opening any of the contents below in this window and then click one of the \"Log To\" button.");
+                "Try opening any of the contents below in this window and then click one of the \"OutPutLog To\" button.");
             ImGui::LogButtons();
 
             HelpMarker("You can also call ImGui::LogText() to output directly to the log without a visual output.");
@@ -5730,7 +5730,7 @@ static void ShowDemoWindowInputs()
             HelpMarker(
                 "This is a simplified view. See more detailed input state:\n"
                 "- in 'Tools->Metrics/Debugger->Inputs'.\n"
-                "- in 'Tools->Debug Log->IO'.");
+                "- in 'Tools->Debug OutPutLog->IO'.");
             if (ImGui::IsMousePosValid())
                 ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
             else
@@ -7031,8 +7031,8 @@ static void ShowExampleAppLog(bool* p_open)
     // We take advantage of a rarely used feature: multiple calls to Begin()/End() are appending to the _same_ window.
     // Most of the contents of the window will be added by the log.Draw() call.
     ImGui::SetNextWindowSize(ImVec2(500, 400), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Example: Log", p_open);
-    IMGUI_DEMO_MARKER("Examples/Log");
+    ImGui::Begin("Example: OutPutLog", p_open);
+    IMGUI_DEMO_MARKER("Examples/OutPutLog");
     if (ImGui::SmallButton("[Debug] Add 5 entries"))
     {
         static int counter = 0;
@@ -7050,7 +7050,7 @@ static void ShowExampleAppLog(bool* p_open)
     ImGui::End();
 
     // Actually call in the regular Log helper (which will Begin() into the same window as we just did)
-    log.Draw("Example: Log", p_open);
+    log.Draw("Example: OutPutLog", p_open);
 }
 
 //-----------------------------------------------------------------------------
@@ -7235,7 +7235,7 @@ static void ShowExampleAppLongText(bool* p_open)
             log.appendf("%i The quick brown fox jumps over the lazy dog\n", lines + i);
         lines += 1000;
     }
-    ImGui::BeginChild("Log");
+    ImGui::BeginChild("OutPutLog");
     switch (test_type)
     {
     case 0:

@@ -13,7 +13,7 @@ class Input {
 
 public:
 
-	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+	//template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	static Input* GetInstance();
 
@@ -27,9 +27,9 @@ private:
 
 	WinApp* winApp_ = nullptr;
 
-	ComPtr<IDirectInput8> directInput_ = nullptr;
+	Microsoft::WRL::ComPtr<IDirectInput8> directInput_ = nullptr;
 
-	ComPtr<IDirectInputDevice8> keyboard_;
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_;
 
 	BYTE key[256] = {};
 
