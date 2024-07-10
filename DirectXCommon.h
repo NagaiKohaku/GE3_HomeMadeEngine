@@ -13,6 +13,9 @@
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"dxcompiler.lib")
 #include "cstdint"
+#include <string>
+#include "others/ResourceObject.h"
+
 
 class WinApp;
 
@@ -50,6 +53,21 @@ public:
 	void PreDraw();
 
 	void PostDraw();
+
+	ID3D12Device* GetDevice() { return device_.Get(); }
+
+	ID3D12GraphicsCommandList* GetCommandList() { return commandList_.Get(); }
+
+	ID3D12DescriptorHeap* GetSRVDescriptorHeap() { return srvDescriptorHeap_.Get(); }
+
+	uint32_t GetSRVDescriptorSize() { return descriptorSizeSRV_; }
+
+	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
+		const std::wstring& filePath,
+		const wchar_t* profile
+	);
+
+	ResourceObject CreateBufferResource(size_t sizeInBytes);
 
 private:
 

@@ -132,7 +132,7 @@ void DirectXCommon::InitializeDevice() {
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 
 		//警告時に止まる
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		//infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
 		//解放
 		infoQueue->Release();
@@ -424,9 +424,6 @@ void DirectXCommon::PreDraw() {
 	//指定した深度で画面全体をクリアする
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	//ImGui描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeap[] = { srvDescriptorHeap_.Get() };
-
 	//コマンドを積んでいく
 
 	//Viewportを設定
@@ -567,4 +564,138 @@ D3D12_GPU_DESCRIPTOR_HANDLE DirectXCommon::GetGPUDescriptorHandle(Microsoft::WRL
 	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += (descriptorSize * index);
 	return handleGPU;
+}
+
+Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(
+	const std::wstring& filePath,
+	const wchar_t* profile
+) {
+
+	/*hlslファイルを読む*/
+
+	//これからシェーダーをコンパイルする旨をログに出す
+	OutPutLog(ConvertString(std::format(L"Begin CompileShader, path:{}, profile:{}\n", filePath, profile)));
+
+	//hlslのソースファイル
+	IDxcBlobEncoding* shaderSource = nullptr;
+
+	//hlslファイルを読む
+	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+
+	//読めなかったら止める
+	assert(SUCCEEDED(hr));
+
+	//読み込んだファイルの内容を設定する
+	//hlslファイルの内容
+	DxcBuffer shaderSourceBuffer;
+
+	//ポインター
+	shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
+
+	//サイズ
+	shaderSourceBuffer.Size = shaderSource->GetBufferSize();
+
+	//エンコード形式
+	shaderSourceBuffer.Encoding = DXC_CP_UTF8; //UTF8の文字コードであることを通知
+
+	/*コンパイルする*/
+
+	//コンパイルの設定
+	LPCWSTR arguments[] = {
+		filePath.c_str(),        //コンパイル対象のhlslファイル名
+		L"-E",L"main",           //エントリーポイントの指定。基本的にmain以外はしない
+		L"-T",profile,           //ShaderProfileの指定
+		L"-Zi",L"-Qembed_debug", //デバッグ用の情報を埋め込む
+		L"-Od",                  //最適化しておく
+		L"-Zpr",                 //メモリレイアウトは行優先
+	};
+
+	//コンパイル結果
+	IDxcResult* shaderResult = nullptr;
+
+	//実際にShaderをコンパイルする
+	hr = dxcCompiler_->Compile(
+		&shaderSourceBuffer,        //読み込んだファイル
+		arguments,                  //コンパイルオプション
+		_countof(arguments),        //コンパイルオプションの数
+		includeHandler_,             //includeが含まれた諸々
+		IID_PPV_ARGS(&shaderResult) //コンパイル結果
+	);
+
+	//コンパイルエラーではなくdxcが起動できないなど致命的な状態
+	assert(SUCCEEDED(hr));
+
+	/*蛍光エラーが出ていないか確認する*/
+
+	//エラー確認用
+	IDxcBlobUtf8* shaderError = nullptr;
+
+	//警告・エラーがあるか確認する
+	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+
+	//警告・エラーが出たらログを出して止める
+	if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
+
+		//エラーがあったことをログに出力する
+		OutPutLog(shaderError->GetStringPointer());
+
+		//プログラムを止める
+		assert(false);
+	}
+
+	/*コンパイル結果を受け取って返す*/
+
+	//コンパイル結果をBlob(BinaryLargeOBject)として受け取る
+	//Blobは大きなバイナリデータのこと
+
+	//コンパイル結果取得用
+	Microsoft::WRL::ComPtr<IDxcBlob> shaderBlob = nullptr;
+
+	//コンパイル結果から実行用のバイナリ部分を取得
+	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
+	assert(SUCCEEDED(hr));
+
+	//成功したログを出す
+	OutPutLog(ConvertString(std::format(L"Compile Succeeded, path:{}, profile:{}\n", filePath, profile)));
+
+	//もう使わないリソースを解放
+	shaderSource->Release();
+	shaderResult->Release();
+
+	//実行用のバイナリを返却
+	return shaderBlob;
+}
+
+ResourceObject DirectXCommon::CreateBufferResource(size_t sizeInBytes) {
+
+	//頂点リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; //UploadHeapを使う
+
+	//頂点リソースの設定
+	D3D12_RESOURCE_DESC vertexResourceDesc{};
+
+	//バッファリソース。テクスチャの場合はまた別の設定をする
+	vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	vertexResourceDesc.Width = sizeInBytes; //リソースのサイズ
+	//バッファの場合はこれらは1にする決まり
+	vertexResourceDesc.Height = 1;
+	vertexResourceDesc.DepthOrArraySize = 1;
+	vertexResourceDesc.MipLevels = 1;
+	vertexResourceDesc.SampleDesc.Count = 1;
+
+	//バッファの場合はこれにする決まり
+	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	//実際に頂点リソースを作る
+	ID3D12Resource* vertexResource = nullptr;
+
+	HRESULT hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+		&vertexResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+		IID_PPV_ARGS(&vertexResource));
+
+	assert(SUCCEEDED(hr));
+
+	//作った頂点リソースを返す
+	return vertexResource;
 }
