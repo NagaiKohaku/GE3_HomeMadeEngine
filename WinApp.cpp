@@ -80,6 +80,7 @@ void WinApp::Initialize() {
 	//hwndの設定をもとにウィンドウを生成する
 	ShowWindow(hwnd_, SW_SHOW);
 
+	timeBeginPeriod(1);
 }
 
 void WinApp::Finalize() {

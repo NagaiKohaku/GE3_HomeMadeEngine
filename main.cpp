@@ -1,19 +1,6 @@
 #pragma warning(push)
 //C4023の警告を見なかったことにする
 #pragma warning(disable:4023)
-#pragma comment(lib,"d3d12.lib")
-#pragma comment(lib,"dxgi.lib")
-#pragma comment(lib,"dxguid.lib")
-#pragma comment(lib,"dxcompiler.lib")
-#include <Windows.h>
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#include <dxgidebug.h>
-#include <dxcapi.h>
-#include <wrl.h>
-#include <cassert>
-#include <cstdint>
-#include <string>
 #include <fstream>
 #include <sstream>
 #include "math/Vector.h"
@@ -21,9 +8,6 @@
 #include "math/Pipeline.h"
 #include "math/Vector3Math.h"
 #include "others/ResourceObject.h"
-#include "externals/imgui/imgui.h"
-#include "externals/imgui/imgui_impl_dx12.h"
-#include "externals/imgui/imgui_impl_win32.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/DirectXTex/d3dx12.h"
 #pragma warning(pop)
@@ -104,8 +88,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//WinAppの初期化
 	winApp->Initialize();
 
+	//DirectXCommonの静的インスタンスを取得
 	DirectXCommon* directXCommon = DirectXCommon::GetInstance();
 
+	//DirectXCommonの初期化
 	directXCommon->Initialize();
 
 	//Inputの静的インスタンスを取得
@@ -115,10 +101,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	input->Initialize();
 
 	/*RootSignatureを作成*/
-
-	//RootSignatureとは、
-	//ShaderとResourceをどのように関連付けるかを示したオブジェクトのこと
-	//今回は特に必要な設定がないためデフォルトのままである
 
 	//RootSignatureを作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
@@ -197,9 +179,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/*InputLayoutを設定する*/
 
-	//InputLayoutとは、
-	//VertexShaderへ渡す頂点データがどのようなものかを指定するオブジェクトのこと
-
 	//InputLayOutを設定する
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
@@ -222,10 +201,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	/*BlendStateを設定する*/
 
-	//BlendStateとは、
-	//PixelShaderからの出漁句を画面にどのように書き込むかを設定する項目のこと
-	//今回は不透明で、すべての要素を書き込むようにする
-
 	//BlendStateの設定
 	D3D12_BLEND_DESC blendDesc{};
 
@@ -234,10 +209,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		D3D12_COLOR_WRITE_ENABLE_ALL;
 
 	/*RasterizerStateを設定する*/
-
-	//RasterizerStateとは、
-	//Rasterizerに対する設定のこと
-	//RasterizerはPixelshaderを起動するために必要
 
 	//RasterizerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
@@ -278,10 +249,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 	/*PSOを生成する*/
-
-	//PSOとは、
-	//描画に関する設定が大量に詰め込まれたオブジェクトのこと
-	//今までで設定された項目をもとにPSOを生成する
 
 	//PSOを生成する
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
@@ -396,11 +363,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	directionalLightDataModel->direction = { 0.0f,-1.0f,0.0f }; //向きを設定
 	directionalLightDataModel->intensity = 1.0f;                //輝度を設定
 
-
-	///                    ///
-	/// GPU操作の下準備(終了) ///
-	///                   ///
-
 	//カメラのローカルTransform
 	Transform transformCamera{ {1.0f,1.0f,1.0f},{0.5f,0.0f,0.0f},{0.0f,6.0f,-10.0f} };
 
@@ -461,9 +423,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	directXCommon->GetDevice()->CreateShaderResourceView(textureResource.Get(), &srvDesc, textureSrvHandleCPU);
 	directXCommon->GetDevice()->CreateShaderResourceView(textureResource2.Get(), &srvDesc2, textureSrvHandleCPU2);
 
+
 	///            ///
 	/// ゲームループ ///
-	///           ///
+	///            ///
 
 
 	while (true) {
@@ -571,6 +534,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// 画面にオブジェクトを表示する ///
 		///                        ///
 
+
+		//描画前処理
 		directXCommon->PreDraw();
 
 		//ImGui描画用のDescriptorHeapの設定
@@ -604,6 +569,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//実際のcommandListのImGuiの描画コマンドを積む
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());
 
+		//描画後処理
 		directXCommon->PostDraw();
 
 		///                               ///

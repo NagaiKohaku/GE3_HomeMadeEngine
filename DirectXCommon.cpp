@@ -10,7 +10,10 @@ DirectXCommon* DirectXCommon::GetInstance() {
 
 void DirectXCommon::Initialize() {
 
+	//WinAppクラスを借りる
 	winApp = WinApp::GetInstance();
+
+	initializeFixFPS();
 
 	InitializeDevice();
 	InitializeCommand();
@@ -111,7 +114,7 @@ void DirectXCommon::InitializeDevice() {
 		}
 	}
 
-	//デバイスの生成がうまくいかなかった場合はプログラムを止める
+	//正常に生成できているか確認
 	assert(device_ != nullptr);
 
 	//初期化完了のログを出す
@@ -132,7 +135,7 @@ void DirectXCommon::InitializeDevice() {
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 
 		//警告時に止まる
-		//infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
 		//解放
 		infoQueue->Release();
@@ -207,10 +210,9 @@ void DirectXCommon::InitializeSwapChain() {
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;    //モニタにうつしたら、中身を破棄
 
 	//スワップチェーンを生成する
-	//コマンドキュー、ウィンドウハンドル、設定を渡して生成する
 	hr = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), winApp->GetHwnd(), &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 
-	//スワップチェーンの生成がうまくいったかの確認
+	//正常に生成できているか確認
 	assert(SUCCEEDED(hr));
 
 }
@@ -253,11 +255,12 @@ void DirectXCommon::InitializeDepthBuffer() {
 
 void DirectXCommon::InitializeDescriptorHeap() {
 
-	//DescriptorSizeを取得しておく
+	//各種デスクリプタのサイズを取得
 	descriptorSizeSRV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	descriptorSizeRTV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	descriptorSizeDSV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
+	//各種デスクリプタを生成
 	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 	srvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 	dsvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
@@ -268,6 +271,9 @@ void DirectXCommon::InitializeRenderTargetView() {
 
 	HRESULT hr;
 
+	/*スワップチェーンからリソースを引っ張ってくる*/
+
+	//1つ目のResourseを引っ張ってくる
 	hr = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
 
 	//Resourceが取得できたかの確認
@@ -288,9 +294,10 @@ void DirectXCommon::InitializeRenderTargetView() {
 	//ディスクリプタの先頭を取得する
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = GetCPUDescriptorHandle(rtvDescriptorHeap_, descriptorSizeRTV_, 0);
 
-	//まず1つ目を作る・1つ目は最初のところに作る。
+	//1つ目のディスクリプタハンドルを得る
 	rtvHandles_[0] = rtvStartHandle;
 
+	//1つ目を作る
 	device_->CreateRenderTargetView(swapChainResources_[0].Get(), &rtvDesc, rtvHandles_[0]);
 
 	//2つ目のディスクリプタハンドルを得る
@@ -307,6 +314,7 @@ void DirectXCommon::InitializeDepthStencilView() {
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; //Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; //2DTexture
+
 	//DSVHeapの先頭にDSVを作る
 	device_->CreateDepthStencilView(depthStancilResource_.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
 
@@ -380,6 +388,42 @@ void DirectXCommon::InitializeImGui() {
 		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
 	);
 
+}
+
+void DirectXCommon::initializeFixFPS() {
+
+	//現在時間を記録する
+	reference_ = std::chrono::steady_clock::now();
+}
+
+void DirectXCommon::UpdateFixFPS() {
+
+	//1/60秒ぴったりの時間
+	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+
+	//1/60秒よりわずかに短い時間
+	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+
+	//現在時間を取得する
+	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+
+	//前回記録時間からの経過時間を取得する
+	std::chrono::microseconds elapsed =
+		std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+
+	//1/60秒(よりわずかに短い時間)経っていない場合
+	if (elapsed < kMinCheckTime) {
+
+		//1/60秒経過するまで微小なスリープを繰り返す
+		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
+
+			//1マイクロ秒スリープ
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
+		}
+	}
+
+	//現在の時間を記録する
+	reference_ = std::chrono::steady_clock::now();
 }
 
 void DirectXCommon::PreDraw() {
@@ -507,6 +551,9 @@ void DirectXCommon::PostDraw() {
 		//FenceEventの解放
 		CloseHandle(fenceEvent);
 	}
+
+	//FPS固定の更新処理
+	UpdateFixFPS();
 
 	/*次フレームの準備*/
 
