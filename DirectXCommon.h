@@ -5,7 +5,6 @@
 #include <dxgi1_6.h>
 #include <dxgidebug.h>
 #include <dxcapi.h>
-#include "WinApp.h"
 #include "externals/imgui/imgui.h"
 #include "externals/imgui/imgui_impl_dx12.h"
 #include "externals/imgui/imgui_impl_win32.h"
@@ -13,6 +12,9 @@
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"dxguid.lib")
 #pragma comment(lib,"dxcompiler.lib")
+#include "cstdint"
+
+class WinApp;
 
 struct D3DResourceLeakChecker {
 	~D3DResourceLeakChecker() {
@@ -44,6 +46,10 @@ public:
 	static DirectXCommon* GetInstance();
 
 	void Initialize();
+
+	void PreDraw();
+
+	void PostDraw();
 
 private:
 
@@ -115,11 +121,13 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> backBufferResource_[2] = { nullptr };
+	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources_[2] = { nullptr };
 
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2];
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_ = nullptr;
+
+	uint64_t fenceValue_ = 0;
 
 	//ビューポート
 	D3D12_VIEWPORT viewport_{};

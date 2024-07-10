@@ -521,6 +521,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (winApp->ProcessMessage()) {
 			break;
 		}
+
+		directXCommon->PreDraw();
+
+		directXCommon->PostDraw();
+
 		//
 		//		//ここからImGuiのフレームが始まる
 		//		ImGui_ImplDX12_NewFrame();
@@ -621,59 +626,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//		///                        ///
 		//
 		//
-		//		//これから書き込むバックバッファのインデックスを取得
-		//		UINT backBufferIndex = swapChain->GetCurrentBackBufferIndex();
-		//
-		//		/*ResourceをRTVとして使えるようにする*/
-		//
-		//		//生成後のSwapChainはResourceStateが画面に映す用のため、
-		//		//描画用にしなければならない。
-		//		//そのため、TransitionBarrierを使ってResourceStateを変更する。
-		//
-		//		//TransitionBarrierの設定
-		//		D3D12_RESOURCE_BARRIER barrier{};
-		//
-		//		//今回のバリアはTransition
-		//		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		//
-		//		//Noneにしておく
-		//		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		//
-		//		//バリアを張る対象のリソース。現在のバックバッファに対して行う
-		//		barrier.Transition.pResource = swapChainResources[backBufferIndex].Get();
-		//
-		//		//遷移前(現在)のResourceState 
-		//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-		//
-		//		//遷移後のResourceState
-		//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		//
-		//		//TransitionBarrierを張る
-		//		commandList->ResourceBarrier(1, &barrier);
-		//
-		//		/*画面をクリアする*/
-		//
-		//		//描画先のRTVとDSVを設定する
-		//		commandList->OMSetRenderTargets(1, &rtvHandles[backBufferIndex], false, &dsvHandle);
-		//
-		//		//指定した色で画面全体をクリアする
-		//		float clearColor[] = { 0.1f,0.25f,0.5f,1.0f }; //青っぽい色。RGBAの順
-		//		commandList->ClearRenderTargetView(rtvHandles[backBufferIndex], clearColor, 0, nullptr);
-		//
-		//		//指定した深度で画面全体をクリアする
-		//		commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-		//
-		//		//ImGui描画用のDescriptorHeapの設定
-		//		ID3D12DescriptorHeap* descriptorHeap[] = { srvDescriptorHeap.Get() };
-		//
-		//		//コマンドを積んでいく
-		//
-		//		//Viewportを設定
-		//		commandList->RSSetViewports(1, &viewport);
-		//
-		//		//Scissor設定
-		//		commandList->RSSetScissorRects(1, &scissorRect);
-		//
 		//		//RootSignatureを設定。PSOに設定しているけど別途設定が必要
 		//		commandList->SetGraphicsRootSignature(rootSignature.Get());
 		//
@@ -705,66 +657,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//		/*Resourceを画面表示できるようにする*/
 		//
 		//		//描画の作業が終わったため、描画用の画面に戻す
-		//
-		//		//RTV用の状態から画面表示できる状態にする
-		//		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		//
-		//		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		//
-		//		//TransitionBarrierを張る
-		//		commandList->ResourceBarrier(1, &barrier);
-		//
-		//		/*コマンドリストの受付を終了する*/
-		//
-		//		//コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseすること
-		//		hr = commandList->Close();
-		//
-		//		//コマンドリストをCloseできたかの確認
-		//		assert(SUCCEEDED(hr));
-		//
-		//		/*コマンドリストの実行*/
-		//
-		//		//今まで積まれてきたコマンドリストをコピー
-		//		ID3D12CommandList* commandLists[] = { commandList.Get() };
-		//
-		//		//GPUにコマンドリストの実行を行わせる
-		//		commandQueue->ExecuteCommandLists(1, commandLists);
-		//
-		//		//GPUとOSに画面の交換を行いように通知する
-		//		swapChain->Present(1, 0);
-		//
-		//		/*GPUの実行完了を待つ*/
-		//
-		//		//Fenceの値を更新
-		//		fenceValue++;
-		//
-		//		//GPUがここまでたどり着いたときに、Fenceの値を指定した値に代入するようにSignalを送る
-		//		commandQueue->Signal(fence.Get(), fenceValue);
-		//
-		//		//Fenceの値が指定したSignal値にたどり着いているか確認する
-		//		//GetCompleatedValueの初期値はFence作成時に渡した初期値
-		//		if (fence->GetCompletedValue() < fenceValue) {
-		//
-		//			//指定したSignalにたどり着いていないので、たどり着くまで待つようにイベントを設定する
-		//			fence->SetEventOnCompletion(fenceValue, fenceEvent);
-		//
-		//			//イベントを待つ
-		//			WaitForSingleObject(fenceEvent, INFINITE);
-		//		}
-		//
-		//		/*次フレームの準備*/
-		//
-		//		//次のフレーム用のコマンドリストを準備
-		//		hr = commandAllocator->Reset();
-		//
-		//		//コマンドアロケータをリセットできたかの確認
-		//		assert(SUCCEEDED(hr));
-		//
-		//		//コマンドリストをコマンドアロケータでリセット
-		//		hr = commandList->Reset(commandAllocator.Get(), nullptr);
-		//
-		//		//コマンドリストをリセットできたかの確認
-		//		assert(SUCCEEDED(hr));
 		//
 		//
 		//		///                               ///
