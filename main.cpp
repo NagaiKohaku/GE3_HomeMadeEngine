@@ -14,6 +14,7 @@
 
 #include "WinApp.h"
 #include "DirectXCommon.h"
+#include "SpriteCommon.h"
 #include "Input.h"
 
 //頂点データ
@@ -93,6 +94,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//DirectXCommonの初期化
 	directXCommon->Initialize();
+
+	//SpriteCommonの静的インスタンスを取得
+	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
+
+	//SpriteCommonの初期化
+	spriteCommon->Initialize();
 
 	//Inputの静的インスタンスを取得
 	Input* input = Input::GetInstance();
