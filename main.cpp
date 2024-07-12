@@ -19,6 +19,7 @@
 #include "Sprite.h"
 
 #include "memory"
+#include "vector"
 
 //頂点データ
 struct VertexData {
@@ -108,11 +109,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Inputの初期化
 	input->Initialize();
 
-	std::unique_ptr<Sprite> sprite;
-	
-	sprite = std::make_unique<Sprite>();
+	std::vector<std::unique_ptr<Sprite>> sprites;
 
-	sprite->Initialize();
+	for (uint32_t i = 0; i < 5; i++) {
+		std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
+		sprite->Initialize();
+		sprites.push_back(std::move(sprite));
+	}
+
+	Vector2 spritePos[5];
+	float spriteRotation[5];
+	Vector2 spriteSize[5];
+	Vector4 spriteColor[5];
+
+	int num = 0;
+
+	for (std::vector<std::unique_ptr<Sprite>>::iterator sprite = sprites.begin(); sprite != sprites.end(); ++sprite) {
+		spritePos[num] = (*sprite)->GetPosition();
+		spriteRotation[num] = (*sprite)->GetRotation();
+		spriteSize[num] = (*sprite)->GetSize();
+		spriteColor[num] = (*sprite)->GetColor();
+		num++;
+	}
 
 	//Textureを読んで転送する
 	DirectX::ScratchImage mipImages = LoadTexture("resources/uvChecker.png");
@@ -156,12 +174,67 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Inputクラスの更新
 		input->Update();
 
-		sprite->Update();
+		for (std::vector<std::unique_ptr<Sprite>>::iterator sprite = sprites.begin(); sprite != sprites.end(); ++sprite) {
+			(*sprite)->Update();
+		}
 
 		/*ImGuiの設定*/
 
 		//ImGuiを起動
 		ImGui::Begin("window");
+
+		if (ImGui::TreeNode("Sprite1")) {
+			ImGui::DragFloat2("Transform", &spritePos[0].x, 0.1f);
+			ImGui::DragFloat("Rotation", &spriteRotation[0], 0.1f);
+			ImGui::DragFloat2("Size", &spriteSize[0].x, 0.1f);
+			ImGui::ColorEdit4("Color", &spriteColor[0].x);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Sprite2")) {
+			ImGui::DragFloat2("Transform", &spritePos[1].x, 0.1f);
+			ImGui::DragFloat("Rotation", &spriteRotation[1], 0.1f);
+			ImGui::DragFloat2("Size", &spriteSize[1].x, 0.1f);
+			ImGui::ColorEdit4("Color", &spriteColor[1].x);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Sprite3")) {
+			ImGui::DragFloat2("Transform", &spritePos[2].x, 0.1f);
+			ImGui::DragFloat("Rotation", &spriteRotation[2], 0.1f);
+			ImGui::DragFloat2("Size", &spriteSize[2].x, 0.1f);
+			ImGui::ColorEdit4("Color", &spriteColor[2].x);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Sprite4")) {
+			ImGui::DragFloat2("Transform", &spritePos[3].x, 0.1f);
+			ImGui::DragFloat("Rotation", &spriteRotation[3], 0.1f);
+			ImGui::DragFloat2("Size", &spriteSize[3].x, 0.1f);
+			ImGui::ColorEdit4("Color", &spriteColor[3].x);
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Sprite5")) {
+			ImGui::DragFloat2("Transform", &spritePos[4].x, 0.1f);
+			ImGui::DragFloat("Rotation", &spriteRotation[4], 0.1f);
+			ImGui::DragFloat2("Size", &spriteSize[4].x, 0.1f);
+			ImGui::ColorEdit4("Color", &spriteColor[4].x);
+
+			ImGui::TreePop();
+		}
+		num = 0;
+		for (std::vector<std::unique_ptr<Sprite>>::iterator sprite = sprites.begin(); sprite != sprites.end(); ++sprite) {
+			(*sprite)->SetPosition(spritePos[num]);
+			(*sprite)->SetRotation(spriteRotation[num]);
+			(*sprite)->SetSize(spriteSize[num]);
+			(*sprite)->SetColor(spriteColor[num]);
+			num++;
+		}
 
 		//ImGuiの終了
 		ImGui::End();
@@ -183,13 +256,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		spriteCommon->CommonDrawSetting();
 
 		//ImGui描画用のDescriptorHeapの設定
-		ID3D12DescriptorHeap* descriptorHeap[] = { directXCommon->GetSRVDescriptorHeap()};
+		ID3D12DescriptorHeap* descriptorHeap[] = { directXCommon->GetSRVDescriptorHeap() };
 
 		//ImGuiの設定
 		directXCommon->GetCommandList()->SetDescriptorHeaps(1, descriptorHeap);
 
-		//Spriteの描画
-		sprite->Draw(textureSrvHandleGPU);
+		for (std::unique_ptr<Sprite>& sprite : sprites) {
+			//Spriteの描画
+			sprite->Draw(textureSrvHandleGPU);
+		}
 
 		//実際のcommandListのImGuiの描画コマンドを積む
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());

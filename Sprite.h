@@ -23,6 +23,22 @@ public:
 
 	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE texture);
 
+	const Vector2& GetPosition() const { return position_; }
+
+	float GetRotation() const { return rotation_; }
+
+	const Vector2& GetSize() const { return size_; }
+
+	const Vector4& GetColor() const { return materialData_->color; }
+
+	void SetPosition(const Vector2& position) { position_ = position; }
+
+	void SetRotation(float rotation) { rotation_ = rotation; }
+
+	void SetSize(const Vector2& size) { size_ = size; }
+
+	void SetColor(const Vector4& color) { materialData_->color = color; }
+
 private:
 
 	//頂点データ
@@ -70,4 +86,8 @@ private:
 	//バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
+	Vector2 position_{ 0.0f,0.0f };
+	float rotation_ = 0.0f;
+	Vector2 size_ = { 640.0f,360.0f };
 };
