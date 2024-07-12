@@ -713,7 +713,7 @@ Microsoft::WRL::ComPtr<IDxcBlob> DirectXCommon::CompileShader(
 	return shaderBlob;
 }
 
-ResourceObject DirectXCommon::CreateBufferResource(size_t sizeInBytes) {
+Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateBufferResource(size_t sizeInBytes) {
 
 	//頂点リソース用のヒープの設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
@@ -735,7 +735,7 @@ ResourceObject DirectXCommon::CreateBufferResource(size_t sizeInBytes) {
 	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 	//実際に頂点リソースを作る
-	ID3D12Resource* vertexResource = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
 
 	HRESULT hr = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&vertexResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
