@@ -83,6 +83,9 @@ public:
 	//ResourceObjectの生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
+	//最大SRV数
+	static const uint32_t kMaxSRVCount;
+
 private:
 
 	//デバイスの生成

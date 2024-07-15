@@ -1,5 +1,6 @@
 #pragma once
 #include "stdint.h"
+#include "string"
 
 #include "wrl.h"
 
@@ -7,9 +8,6 @@
 #include "math//Matrix.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include "d3d12.h"
-#include "dxgi1_6.h"
-#include "dxgidebug.h"
-#include "dxcapi.h"
 
 class SpriteCommon;
 
@@ -21,7 +19,7 @@ public:
 
 	void Update();
 
-	void Draw(D3D12_GPU_DESCRIPTOR_HANDLE texture);
+	void Draw(uint32_t textureIndex);
 
 	const Vector2& GetPosition() const { return position_; }
 

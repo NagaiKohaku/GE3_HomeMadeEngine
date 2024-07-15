@@ -3,6 +3,8 @@
 #include "cassert"
 #include "others/Log.h"
 
+const uint32_t DirectXCommon::kMaxSRVCount = 512;
+
 DirectXCommon* DirectXCommon::GetInstance() {
 	static DirectXCommon instance;
 	return &instance;
@@ -262,7 +264,7 @@ void DirectXCommon::InitializeDescriptorHeap() {
 
 	//各種デスクリプタを生成
 	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
-	srvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+	srvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 	dsvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
 }

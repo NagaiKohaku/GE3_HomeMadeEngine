@@ -2,6 +2,7 @@
 #include "SpriteCommon.h"
 #include "DirectXCommon.h"
 #include "WinApp.h"
+#include "TextureManager.h"
 #include "math/Pipeline.h"
 
 void Sprite::Initialize() {
@@ -100,7 +101,7 @@ void Sprite::Update() {
 	WVPData_->World = worldMatrix;
 }
 
-void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE texture) {
+void Sprite::Draw(uint32_t textureIndex) {
 
 	spriteCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
@@ -110,7 +111,7 @@ void Sprite::Draw(D3D12_GPU_DESCRIPTOR_HANDLE texture) {
 
 	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, WVPResource_->GetGPUVirtualAddress());
 
-	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, texture);
+	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
 
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
