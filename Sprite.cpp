@@ -5,7 +5,7 @@
 #include "TextureManager.h"
 #include "math/Pipeline.h"
 
-void Sprite::Initialize() {
+void Sprite::Initialize(const std::string& filePath) {
 
 	spriteCommon_ = SpriteCommon::GetInstance();
 
@@ -55,26 +55,51 @@ void Sprite::Initialize() {
 	WVPData_->WVP = Pipeline::MakeIdentity4x4();
 	WVPData_->World = Pipeline::MakeIdentity4x4();
 
+	textureIndex_ = TextureManager::GetInstance()->LoadTexture(filePath);
+
+	AdjustTextureSize();
 }
 
 void Sprite::Update() {
 
+	float left = 0.0f - anchorPoint_.x;
+	float right = 1.0f - anchorPoint_.x;
+	float top = 0.0f - anchorPoint_.y;
+	float bottom = 1.0f - anchorPoint_.y;
+
+	if (isFlipX_) {
+		left = -left;
+		right = -right;
+	}
+
+	if (isFlipY_) {
+		top = -top;
+		bottom = -bottom;
+	}
+
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex_);
+
+	float texLeft = textureLeftTop_.x / metadata.width;
+	float texRight = (textureLeftTop_.x + textureSize_.x) / metadata.width;
+	float texTop = textureLeftTop_.y / metadata.height;
+	float texBottom = (textureLeftTop_.y + textureSize_.y) / metadata.height;
+
 	//頂点リソースにデータを書き込む
 	//左下
-	vertexData_[0].position = { 0.0f,1.0f,0.0f,1.0f };
-	vertexData_[0].texcoord = { 0.0f,1.0f };
+	vertexData_[0].position = { left,bottom,0.0f,1.0f };
+	vertexData_[0].texcoord = { texLeft,texBottom };
 	vertexData_[0].normal = { 0.0f,0.0f,-1.0f };
 	//左上
-	vertexData_[1].position = { 0.0f,0.0f,0.0f,1.0f };
-	vertexData_[1].texcoord = { 0.0f,0.0f };
+	vertexData_[1].position = { left,top,0.0f,1.0f };
+	vertexData_[1].texcoord = { texLeft,texTop };
 	vertexData_[1].normal = { 0.0f,0.0f,-1.0f };
 	//右下
-	vertexData_[2].position = { 1.0f,1.0f,0.0f,1.0f };
-	vertexData_[2].texcoord = { 1.0f,1.0f };
+	vertexData_[2].position = { right,bottom,0.0f,1.0f };
+	vertexData_[2].texcoord = { texRight,texBottom };
 	vertexData_[2].normal = { 0.0f,0.0f,-1.0f };
 	//右上
-	vertexData_[3].position = { 1.0f,0.0f,0.0f,1.0f };
-	vertexData_[3].texcoord = { 1.0f,0.0f };
+	vertexData_[3].position = { right,top,0.0f,1.0f };
+	vertexData_[3].texcoord = { texRight,texTop };
 	vertexData_[3].normal = { 0.0f,0.0f,-1.0f };
 
 	//頂点インデックスにデータを書き込む
@@ -101,7 +126,7 @@ void Sprite::Update() {
 	WVPData_->World = worldMatrix;
 }
 
-void Sprite::Draw(uint32_t textureIndex) {
+void Sprite::Draw() {
 
 	spriteCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
@@ -111,7 +136,17 @@ void Sprite::Draw(uint32_t textureIndex) {
 
 	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootConstantBufferView(1, WVPResource_->GetGPUVirtualAddress());
 
-	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex));
+	spriteCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(textureIndex_));
 
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
+}
+
+void Sprite::AdjustTextureSize() {
+
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex_);
+
+	textureSize_.x = static_cast<float>(metadata.width);
+	textureSize_.y = static_cast<float>(metadata.height);
+
+	size_ = textureSize_;
 }

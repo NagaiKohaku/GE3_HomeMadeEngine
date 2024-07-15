@@ -45,35 +45,41 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::vector<std::unique_ptr<Sprite>> sprites;
 
-	for (uint32_t i = 0; i < 5; i++) {
+	Vector2 position[2];
+	float rotation[2];
+	Vector2 size[2];
+	Vector4 color[2];
+	Vector2 anchorPoint[2];
+	bool isFlipX[2];
+	bool isFlipY[2];
+	Vector2 textureLeftTop[2];
+	Vector2 textureSize[2];
+
+	for (uint32_t i = 0; i < 2; i++) {
 		std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
-		sprite->Initialize();
 		sprites.push_back(std::move(sprite));
 	}
 
-	uint32_t uvCheckerTexture = TextureManager::GetInstance()->LoadTexture("resources/uvChecker.png");
-	uint32_t monsterBallTexture = TextureManager::GetInstance()->LoadTexture("resources/monsterBall.png");
+	sprites[0]->Initialize("resources/monsterBall.png");
+	sprites[1]->Initialize("resources/uvChecker.png");
 
-	Vector2 spritePos[5];
-	float spriteRotation[5];
-	Vector2 spriteSize[5];
-	Vector4 spriteColor[5];
+	sprites[0]->SetPosition(Vector2(sprites[0]->GetSize().x / 2.0f, sprites[0]->GetSize().y / 2.0f));
+	sprites[0]->SetAnchorPoint(Vector2(0.5f, 0.5f));
 
-	int num = 0;
+	sprites[1]->SetPosition(Vector2(sprites[1]->GetSize().x / 2.0f, sprites[1]->GetSize().y / 2.0f));
+	sprites[1]->SetAnchorPoint(Vector2(0.5f, 0.5f));
 
-	for (std::vector<std::unique_ptr<Sprite>>::iterator sprite = sprites.begin(); sprite != sprites.end(); ++sprite) {
-
-		spritePos[num] = (*sprite)->GetPosition();
-		spriteRotation[num] = (*sprite)->GetRotation();
-		spriteSize[num] = (*sprite)->GetSize();
-		spriteColor[num] = (*sprite)->GetColor();
-
-		spritePos[num] = Vector2(num * 200.0f, 0.0f);
-		spriteSize[num] = Vector2(150.0f, 150.0f);
-
-		num++;
+	for (uint32_t i = 0; i < 2; i++) {
+		position[i] = sprites[i]->GetPosition();
+		rotation[i] = sprites[i]->GetRotation();
+		size[i] = sprites[i]->GetSize();
+		color[i] = sprites[i]->GetColor();
+		anchorPoint[i] = sprites[i]->GetAnchorPoint();
+		isFlipX[i] = sprites[i]->GetIsFlipX();
+		isFlipY[i] = sprites[i]->GetIsFlipY();
+		textureLeftTop[i] = sprites[i]->GetTextureLeftTop();
+		textureSize[i] = sprites[i]->GetTextureSize();
 	}
-
 
 	///            ///
 	/// ゲームループ ///
@@ -105,58 +111,46 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::Begin("window");
 
 		if (ImGui::TreeNode("Sprite1")) {
-			ImGui::DragFloat2("Transform", &spritePos[0].x, 0.1f);
-			ImGui::DragFloat("Rotation", &spriteRotation[0], 0.1f);
-			ImGui::DragFloat2("Size", &spriteSize[0].x, 0.1f);
-			ImGui::ColorEdit4("Color", &spriteColor[0].x);
+			ImGui::DragFloat2("Position", &position[0].x, 0.1f);
+			ImGui::SliderAngle("Rotation", &rotation[0]);
+			ImGui::DragFloat2("Size", &size[0].x, 0.1f);
+			ImGui::ColorEdit4("Color", &color[0].x);
+			ImGui::DragFloat2("AnchorPoint", &anchorPoint[0].x, 0.1f);
+			ImGui::Checkbox("IsFlipX", &isFlipX[0]);
+			ImGui::Checkbox("IsFlipY", &isFlipY[0]);
+			ImGui::DragFloat2("TexLeftTop", &textureLeftTop[0].x, 0.1f);
+			ImGui::DragFloat2("TexSize", &textureSize[0].x, 0.1f);
 
 			ImGui::TreePop();
 		}
 
 		if (ImGui::TreeNode("Sprite2")) {
-			ImGui::DragFloat2("Transform", &spritePos[1].x, 0.1f);
-			ImGui::DragFloat("Rotation", &spriteRotation[1], 0.1f);
-			ImGui::DragFloat2("Size", &spriteSize[1].x, 0.1f);
-			ImGui::ColorEdit4("Color", &spriteColor[1].x);
+			ImGui::DragFloat2("Position", &position[1].x, 0.1f);
+			ImGui::SliderAngle("Rotation", &rotation[1]);
+			ImGui::DragFloat2("Size", &size[1].x, 0.1f);
+			ImGui::ColorEdit4("Color", &color[1].x);
+			ImGui::DragFloat2("AnchorPoint", &anchorPoint[1].x, 0.1f);
+			ImGui::Checkbox("IsFlipX", &isFlipX[1]);
+			ImGui::Checkbox("IsFlipY", &isFlipY[1]);
+			ImGui::DragFloat2("TexLeftTop", &textureLeftTop[1].x, 0.1f);
+			ImGui::DragFloat2("TexSize", &textureSize[1].x, 0.1f);
 
 			ImGui::TreePop();
 		}
 
-		if (ImGui::TreeNode("Sprite3")) {
-			ImGui::DragFloat2("Transform", &spritePos[2].x, 0.1f);
-			ImGui::DragFloat("Rotation", &spriteRotation[2], 0.1f);
-			ImGui::DragFloat2("Size", &spriteSize[2].x, 0.1f);
-			ImGui::ColorEdit4("Color", &spriteColor[2].x);
-
-			ImGui::TreePop();
+		for (uint32_t i = 0; i < 2; i++) {
+			sprites[i]->SetPosition(position[i]);
+			sprites[i]->SetRotation(rotation[i]);
+			sprites[i]->SetSize(size[i]);
+			sprites[i]->SetColor(color[i]);
+			sprites[i]->SetAnchorPoint(anchorPoint[i]);
+			sprites[i]->SetIsFlipX(isFlipX[i]);
+			sprites[i]->SetIsFlipY(isFlipY[i]);
+			sprites[i]->SetTextureLeftTop(textureLeftTop[i]);
+			sprites[i]->SetTextureSize(textureSize[i]);
 		}
 
-		if (ImGui::TreeNode("Sprite4")) {
-			ImGui::DragFloat2("Transform", &spritePos[3].x, 0.1f);
-			ImGui::DragFloat("Rotation", &spriteRotation[3], 0.1f);
-			ImGui::DragFloat2("Size", &spriteSize[3].x, 0.1f);
-			ImGui::ColorEdit4("Color", &spriteColor[3].x);
-
-			ImGui::TreePop();
-		}
-
-		if (ImGui::TreeNode("Sprite5")) {
-			ImGui::DragFloat2("Transform", &spritePos[4].x, 0.1f);
-			ImGui::DragFloat("Rotation", &spriteRotation[4], 0.1f);
-			ImGui::DragFloat2("Size", &spriteSize[4].x, 0.1f);
-			ImGui::ColorEdit4("Color", &spriteColor[4].x);
-
-			ImGui::TreePop();
-		}
-		num = 0;
-		for (std::vector<std::unique_ptr<Sprite>>::iterator sprite = sprites.begin(); sprite != sprites.end(); ++sprite) {
-			(*sprite)->SetPosition(spritePos[num]);
-			(*sprite)->SetRotation(spriteRotation[num]);
-			(*sprite)->SetSize(spriteSize[num]);
-			(*sprite)->SetColor(spriteColor[num]);
-			num++;
-		}
-
+		//ImG
 		//ImGuiの終了
 		ImGui::End();
 
@@ -182,12 +176,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGuiの設定
 		directXCommon->GetCommandList()->SetDescriptorHeaps(1, descriptorHeap);
 
-		sprites[0]->Draw(uvCheckerTexture);
-		sprites[1]->Draw(monsterBallTexture);
-		sprites[2]->Draw(uvCheckerTexture);
-		sprites[3]->Draw(monsterBallTexture);
-		sprites[4]->Draw(uvCheckerTexture);
-
+		sprites[0]->Draw();
+		sprites[1]->Draw();
+		
 		//実際のcommandListのImGuiの描画コマンドを積む
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());
 

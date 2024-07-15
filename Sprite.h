@@ -15,11 +15,11 @@ class Sprite {
 
 public:
 
-	void Initialize();
+	void Initialize(const std::string& filePath);
 
 	void Update();
 
-	void Draw(uint32_t textureIndex);
+	void Draw();
 
 	const Vector2& GetPosition() const { return position_; }
 
@@ -29,6 +29,16 @@ public:
 
 	const Vector4& GetColor() const { return materialData_->color; }
 
+	const Vector2& GetAnchorPoint() const { return anchorPoint_; }
+
+	bool GetIsFlipX() const { return isFlipX_; }
+
+	bool GetIsFlipY() const { return isFlipY_; }
+
+	const Vector2& GetTextureLeftTop() const { return textureLeftTop_; }
+
+	const Vector2& GetTextureSize() const { return textureSize_; }
+
 	void SetPosition(const Vector2& position) { position_ = position; }
 
 	void SetRotation(float rotation) { rotation_ = rotation; }
@@ -36,6 +46,16 @@ public:
 	void SetSize(const Vector2& size) { size_ = size; }
 
 	void SetColor(const Vector4& color) { materialData_->color = color; }
+
+	void SetAnchorPoint(const Vector2& anchorPoint) { anchorPoint_ = anchorPoint; }
+
+	void SetIsFlipX(const bool isFlipX) { isFlipX_ = isFlipX; }
+
+	void SetIsFlipY(const bool isFlipY) { isFlipY_ = isFlipY; }
+
+	void SetTextureLeftTop(const Vector2& textureLeftTop) { textureLeftTop_ = textureLeftTop; }
+
+	void SetTextureSize(const Vector2& textureSize) { textureSize_ = textureSize; }
 
 private:
 
@@ -85,7 +105,19 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
+	uint32_t textureIndex_;
+
 	Vector2 position_{ 0.0f,0.0f };
 	float rotation_ = 0.0f;
 	Vector2 size_ = { 640.0f,360.0f };
+	Vector2 anchorPoint_ = { 0.0f,0.0f };
+
+	bool isFlipX_ = false;
+	bool isFlipY_ = false;
+
+	Vector2 textureLeftTop_ = { 0.0f,0.0f };
+
+	Vector2 textureSize_ = { 100.0f,100.0f };
+
+	void AdjustTextureSize();
 };
