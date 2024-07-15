@@ -57,6 +57,8 @@ public:
 
 	void SetTextureSize(const Vector2& textureSize) { textureSize_ = textureSize; }
 
+	void ChangeTexture(const std::string& filePath);
+
 private:
 
 	//頂点データ

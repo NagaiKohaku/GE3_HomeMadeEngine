@@ -54,6 +54,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	bool isFlipY[2];
 	Vector2 textureLeftTop[2];
 	Vector2 textureSize[2];
+	int texture[2];
 
 	for (uint32_t i = 0; i < 2; i++) {
 		std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
@@ -121,6 +122,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::DragFloat2("TexLeftTop", &textureLeftTop[0].x, 0.1f);
 			ImGui::DragFloat2("TexSize", &textureSize[0].x, 0.1f);
 
+			if (ImGui::Combo("Texture",&texture[0],"uvTexture.png\0monsterBall.png\0\0")) {
+				switch (texture[0]) {
+				case 0:
+					sprites[0]->ChangeTexture("resources/uvChecker.png");
+					size[0] = sprites[0]->GetSize();
+					textureSize[0] = sprites[0]->GetTextureSize();
+					break;
+				case 1:
+					sprites[0]->ChangeTexture("resources/monsterBall.png");
+					size[0] = sprites[0]->GetSize();
+					textureSize[0] = sprites[0]->GetTextureSize();
+					break;
+				default:
+					break;
+				}
+			}
+
 			ImGui::TreePop();
 		}
 
@@ -134,6 +152,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::Checkbox("IsFlipY", &isFlipY[1]);
 			ImGui::DragFloat2("TexLeftTop", &textureLeftTop[1].x, 0.1f);
 			ImGui::DragFloat2("TexSize", &textureSize[1].x, 0.1f);
+
+			if (ImGui::Combo("Texture", &texture[0], "uvTexture.png\0monsterBall.png\0\0")) {
+				switch (texture[0]) {
+				case 0:
+					sprites[0]->ChangeTexture("resources/uvChecker.png");
+					size[0] = sprites[0]->GetSize();
+					textureSize[0] = sprites[0]->GetTextureSize();
+					break;
+				case 1:
+					sprites[0]->ChangeTexture("resources/monsterBall.png");
+					size[0] = sprites[0]->GetSize();
+					textureSize[0] = sprites[0]->GetTextureSize();
+					break;
+				default:
+					break;
+				}
+			}
 
 			ImGui::TreePop();
 		}
@@ -150,7 +185,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			sprites[i]->SetTextureSize(textureSize[i]);
 		}
 
-		//ImG
 		//ImGuiの終了
 		ImGui::End();
 

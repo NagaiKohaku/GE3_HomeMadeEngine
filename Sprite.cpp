@@ -150,3 +150,15 @@ void Sprite::AdjustTextureSize() {
 
 	size_ = textureSize_;
 }
+
+void Sprite::ChangeTexture(const std::string& filePath) {
+
+	textureIndex_ = TextureManager::GetInstance()->LoadTexture(filePath);
+
+	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex_);
+
+	textureSize_.x = static_cast<float>(metadata.width);
+	textureSize_.y = static_cast<float>(metadata.height);
+
+	size_ = textureSize_;
+}
