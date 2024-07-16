@@ -21,6 +21,8 @@ public:
 
 	void Draw();
 
+	void DisplayImGui();
+
 	const Vector2& GetPosition() const { return position_; }
 
 	float GetRotation() const { return rotation_; }

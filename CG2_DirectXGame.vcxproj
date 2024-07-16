@@ -111,6 +111,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\Pipeline.cpp" />
     <ClCompile Include="math\Vector3Math.cpp" />
+    <ClCompile Include="Object3D.cpp" />
+    <ClCompile Include="Object3DCommon.cpp" />
     <ClCompile Include="others\Log.cpp" />
     <ClCompile Include="others\ResourceObject.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -133,6 +135,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="math\Pipeline.h" />
     <ClInclude Include="math\Vector.h" />
     <ClInclude Include="math\Vector3Math.h" />
+    <ClInclude Include="Object3D.h" />
+    <ClInclude Include="Object3DCommon.h" />
     <ClInclude Include="others\Log.h" />
     <ClInclude Include="others\ResourceObject.h" />
     <ClInclude Include="Sprite.h" />

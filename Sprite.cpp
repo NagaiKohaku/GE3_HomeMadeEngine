@@ -141,6 +141,20 @@ void Sprite::Draw() {
 	spriteCommon_->GetDxCommon()->GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
+void Sprite::DisplayImGui() {
+
+	ImGui::DragFloat2("Position", &position_.x, 0.1f);
+	ImGui::SliderAngle("Rotation", &rotation_);
+	ImGui::DragFloat2("Size", &size_.x, 0.1f);
+	ImGui::ColorEdit4("Color", &materialData_->color.x);
+	ImGui::DragFloat2("AnchorPoint", &anchorPoint_.x, 0.01f,0.0f,1.0f);
+	ImGui::Checkbox("IsFlipX", &isFlipX_);
+	ImGui::Checkbox("IsFlipY", &isFlipY_);
+	ImGui::DragFloat2("TexLeftTop", &textureLeftTop_.x, 0.1f);
+	ImGui::DragFloat2("TexSize", &textureSize_.x, 0.1f);
+
+}
+
 void Sprite::AdjustTextureSize() {
 
 	const DirectX::TexMetadata& metadata = TextureManager::GetInstance()->GetMetaData(textureIndex_);

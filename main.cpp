@@ -4,6 +4,8 @@
 #include "TextureManager.h"
 #include "Input.h"
 #include "Sprite.h"
+#include "Object3DCommon.h"
+#include "Object3D.h"
 
 #include "math/Vector.h"
 #include "others/Log.h"
@@ -34,6 +36,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//SpriteCommonの初期化
 	spriteCommon->Initialize();
 
+	//Object3DCommonの静的インスタンスを取得
+	Object3DCommon* object3DCommon = Object3DCommon::GetInstance();
+
+	//Object3DCommonの初期化
+	object3DCommon->Initialize();
+
 	//TextureManagerの初期化
 	TextureManager::GetInstance()->Initialize();
 
@@ -45,15 +53,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::vector<std::unique_ptr<Sprite>> sprites;
 
-	Vector2 position[2];
-	float rotation[2];
-	Vector2 size[2];
-	Vector4 color[2];
-	Vector2 anchorPoint[2];
-	bool isFlipX[2];
-	bool isFlipY[2];
-	Vector2 textureLeftTop[2];
-	Vector2 textureSize[2];
 	int texture[2];
 
 	for (uint32_t i = 0; i < 2; i++) {
@@ -69,18 +68,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	sprites[1]->SetPosition(Vector2(sprites[1]->GetSize().x / 2.0f, sprites[1]->GetSize().y / 2.0f));
 	sprites[1]->SetAnchorPoint(Vector2(0.5f, 0.5f));
-
-	for (uint32_t i = 0; i < 2; i++) {
-		position[i] = sprites[i]->GetPosition();
-		rotation[i] = sprites[i]->GetRotation();
-		size[i] = sprites[i]->GetSize();
-		color[i] = sprites[i]->GetColor();
-		anchorPoint[i] = sprites[i]->GetAnchorPoint();
-		isFlipX[i] = sprites[i]->GetIsFlipX();
-		isFlipY[i] = sprites[i]->GetIsFlipY();
-		textureLeftTop[i] = sprites[i]->GetTextureLeftTop();
-		textureSize[i] = sprites[i]->GetTextureSize();
-	}
 
 	///            ///
 	/// ゲームループ ///
@@ -109,30 +96,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/*ImGuiの設定*/
 
 		//ImGuiを起動
-		ImGui::Begin("window");
+		ImGui::Begin("Debug");
 
 		if (ImGui::TreeNode("Sprite1")) {
-			ImGui::DragFloat2("Position", &position[0].x, 0.1f);
-			ImGui::SliderAngle("Rotation", &rotation[0]);
-			ImGui::DragFloat2("Size", &size[0].x, 0.1f);
-			ImGui::ColorEdit4("Color", &color[0].x);
-			ImGui::DragFloat2("AnchorPoint", &anchorPoint[0].x, 0.1f);
-			ImGui::Checkbox("IsFlipX", &isFlipX[0]);
-			ImGui::Checkbox("IsFlipY", &isFlipY[0]);
-			ImGui::DragFloat2("TexLeftTop", &textureLeftTop[0].x, 0.1f);
-			ImGui::DragFloat2("TexSize", &textureSize[0].x, 0.1f);
+
+			sprites[0]->DisplayImGui();
 
 			if (ImGui::Combo("Texture",&texture[0],"uvTexture.png\0monsterBall.png\0\0")) {
+				
 				switch (texture[0]) {
 				case 0:
+
 					sprites[0]->ChangeTexture("resources/uvChecker.png");
-					size[0] = sprites[0]->GetSize();
-					textureSize[0] = sprites[0]->GetTextureSize();
+					
 					break;
 				case 1:
+
 					sprites[0]->ChangeTexture("resources/monsterBall.png");
-					size[0] = sprites[0]->GetSize();
-					textureSize[0] = sprites[0]->GetTextureSize();
+					
 					break;
 				default:
 					break;
@@ -143,27 +124,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		if (ImGui::TreeNode("Sprite2")) {
-			ImGui::DragFloat2("Position", &position[1].x, 0.1f);
-			ImGui::SliderAngle("Rotation", &rotation[1]);
-			ImGui::DragFloat2("Size", &size[1].x, 0.1f);
-			ImGui::ColorEdit4("Color", &color[1].x);
-			ImGui::DragFloat2("AnchorPoint", &anchorPoint[1].x, 0.1f);
-			ImGui::Checkbox("IsFlipX", &isFlipX[1]);
-			ImGui::Checkbox("IsFlipY", &isFlipY[1]);
-			ImGui::DragFloat2("TexLeftTop", &textureLeftTop[1].x, 0.1f);
-			ImGui::DragFloat2("TexSize", &textureSize[1].x, 0.1f);
 
-			if (ImGui::Combo("Texture", &texture[0], "uvTexture.png\0monsterBall.png\0\0")) {
-				switch (texture[0]) {
+			sprites[1]->DisplayImGui();
+
+			if (ImGui::Combo("Texture", &texture[1], "uvTexture.png\0monsterBall.png\0\0")) {
+
+				switch (texture[1]) {
 				case 0:
-					sprites[0]->ChangeTexture("resources/uvChecker.png");
-					size[0] = sprites[0]->GetSize();
-					textureSize[0] = sprites[0]->GetTextureSize();
+
+					sprites[1]->ChangeTexture("resources/uvChecker.png");
+
 					break;
 				case 1:
-					sprites[0]->ChangeTexture("resources/monsterBall.png");
-					size[0] = sprites[0]->GetSize();
-					textureSize[0] = sprites[0]->GetTextureSize();
+
+					sprites[1]->ChangeTexture("resources/monsterBall.png");
+
 					break;
 				default:
 					break;
@@ -171,18 +146,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			ImGui::TreePop();
-		}
-
-		for (uint32_t i = 0; i < 2; i++) {
-			sprites[i]->SetPosition(position[i]);
-			sprites[i]->SetRotation(rotation[i]);
-			sprites[i]->SetSize(size[i]);
-			sprites[i]->SetColor(color[i]);
-			sprites[i]->SetAnchorPoint(anchorPoint[i]);
-			sprites[i]->SetIsFlipX(isFlipX[i]);
-			sprites[i]->SetIsFlipY(isFlipY[i]);
-			sprites[i]->SetTextureLeftTop(textureLeftTop[i]);
-			sprites[i]->SetTextureSize(textureSize[i]);
 		}
 
 		//ImGuiの終了
