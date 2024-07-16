@@ -176,6 +176,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sprites[0]->Draw();
 		sprites[1]->Draw();
 		
+		object3DCommon->CommonDrawSetting();
+
 		//実際のcommandListのImGuiの描画コマンドを積む
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());
 
