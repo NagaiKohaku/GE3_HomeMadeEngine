@@ -51,23 +51,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Inputの初期化
 	input->Initialize();
 
-	std::vector<std::unique_ptr<Sprite>> sprites;
+	std::unique_ptr<Sprite> sprite;
 
-	int texture[2];
+	std::unique_ptr<Object3D> object3D;
 
-	for (uint32_t i = 0; i < 2; i++) {
-		std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>();
-		sprites.push_back(std::move(sprite));
-	}
+	int texture;
 
-	sprites[0]->Initialize("resources/monsterBall.png");
-	sprites[1]->Initialize("resources/uvChecker.png");
+	sprite = std::make_unique<Sprite>();
 
-	sprites[0]->SetPosition(Vector2(sprites[0]->GetSize().x / 2.0f, sprites[0]->GetSize().y / 2.0f));
-	sprites[0]->SetAnchorPoint(Vector2(0.5f, 0.5f));
+	sprite->Initialize("resources/uvChecker.png");
 
-	sprites[1]->SetPosition(Vector2(sprites[1]->GetSize().x / 2.0f, sprites[1]->GetSize().y / 2.0f));
-	sprites[1]->SetAnchorPoint(Vector2(0.5f, 0.5f));
+	sprite->SetPosition(Vector2(sprite->GetSize().x / 2.0f, sprite->GetSize().y / 2.0f));
+	sprite->SetAnchorPoint(Vector2(0.5f, 0.5f));
+
+	object3D = std::make_unique<Object3D>();
+
+	object3D->Initialize();
 
 	///            ///
 	/// ゲームループ ///
@@ -89,56 +88,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Inputクラスの更新
 		input->Update();
 
-		for (std::vector<std::unique_ptr<Sprite>>::iterator sprite = sprites.begin(); sprite != sprites.end(); ++sprite) {
-			(*sprite)->Update();
-		}
+		sprite->Update();
+
+		object3D->Update();
 
 		/*ImGuiの設定*/
 
 		//ImGuiを起動
 		ImGui::Begin("Debug");
 
-		if (ImGui::TreeNode("Sprite1")) {
+		if (ImGui::TreeNode("Sprite")) {
 
-			sprites[0]->DisplayImGui();
+			sprite->DisplayImGui();
 
-			if (ImGui::Combo("Texture",&texture[0],"uvTexture.png\0monsterBall.png\0\0")) {
+			if (ImGui::Combo("Texture",&texture,"uvTexture.png\0monsterBall.png\0\0")) {
 				
-				switch (texture[0]) {
+				switch (texture) {
 				case 0:
 
-					sprites[0]->ChangeTexture("resources/uvChecker.png");
+					sprite->ChangeTexture("resources/uvChecker.png");
 					
 					break;
 				case 1:
 
-					sprites[0]->ChangeTexture("resources/monsterBall.png");
+					sprite->ChangeTexture("resources/monsterBall.png");
 					
-					break;
-				default:
-					break;
-				}
-			}
-
-			ImGui::TreePop();
-		}
-
-		if (ImGui::TreeNode("Sprite2")) {
-
-			sprites[1]->DisplayImGui();
-
-			if (ImGui::Combo("Texture", &texture[1], "uvTexture.png\0monsterBall.png\0\0")) {
-
-				switch (texture[1]) {
-				case 0:
-
-					sprites[1]->ChangeTexture("resources/uvChecker.png");
-
-					break;
-				case 1:
-
-					sprites[1]->ChangeTexture("resources/monsterBall.png");
-
 					break;
 				default:
 					break;
@@ -173,10 +147,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ImGuiの設定
 		directXCommon->GetCommandList()->SetDescriptorHeaps(1, descriptorHeap);
 
-		sprites[0]->Draw();
-		sprites[1]->Draw();
+		//Spriteの描画
+		sprite->Draw();
 		
+		//3DObjectの描画準備
 		object3DCommon->CommonDrawSetting();
+
+		//Object3Dの描画
+		object3D->Draw();
 
 		//実際のcommandListのImGuiの描画コマンドを積む
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());
