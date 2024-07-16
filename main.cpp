@@ -6,6 +6,8 @@
 #include "Sprite.h"
 #include "Object3DCommon.h"
 #include "Object3D.h"
+#include "ModelCommon.h"
+#include "Model.h"
 
 #include "math/Vector.h"
 #include "others/Log.h"
@@ -14,6 +16,7 @@
 
 #include "memory"
 #include "vector"
+#include "numbers"
 
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -42,6 +45,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Object3DCommonの初期化
 	object3DCommon->Initialize();
 
+	//ModelCommonの静的インスタンスを取得
+	ModelCommon* modelCommon = ModelCommon::GetInstance();
+
+	//ModelCommonの初期化
+	modelCommon->Initialize();
+
 	//TextureManagerの初期化
 	TextureManager::GetInstance()->Initialize();
 
@@ -51,22 +60,52 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Inputの初期化
 	input->Initialize();
 
+	//スプライト
 	std::unique_ptr<Sprite> sprite;
 
-	std::unique_ptr<Object3D> object3D;
+	//3Dオブジェクト
+	std::unique_ptr<Object3D> object1;
+	std::unique_ptr<Object3D> object2;
 
-	int texture;
+	//モデル
+	std::unique_ptr<Model> model;
 
+	//スプライトのテクスチャハンドラー
+	int spriteTextureHandler;
+
+	//スプライトを生成
 	sprite = std::make_unique<Sprite>();
 
+	//スプライトの初期化
 	sprite->Initialize("resources/uvChecker.png");
 
+	//スプライトの初期設定
 	sprite->SetPosition(Vector2(sprite->GetSize().x / 2.0f, sprite->GetSize().y / 2.0f));
 	sprite->SetAnchorPoint(Vector2(0.5f, 0.5f));
 
-	object3D = std::make_unique<Object3D>();
+	//3Dオブジェクトの生成
+	object1 = std::make_unique<Object3D>();
+	object2 = std::make_unique<Object3D>();
 
-	object3D->Initialize();
+	//3Dオブジェクトの初期化
+	object1->Initialize();
+	object2->Initialize();
+
+	//モデルの生成
+	model = std::make_unique<Model>();
+
+	//モデルの初期化
+	model->Initialize();
+
+	//3Dオブジェクトにモデルを設定する
+	object1->SetModel(model.get());
+	object2->SetModel(model.get());
+
+	//3Dオブジェクトの初期設定
+	object1->SetTranslate(Vector3(-1.5f, 0.0f, 0.0f));
+	object1->SetRotate(Vector3(0.0f, static_cast<float>(std::numbers::pi / 180.0f) * 180.0f, 0.0f));
+	object2->SetTranslate(Vector3(1.5f, 0.0f, 0.0f));
+	object2->SetRotate(Vector3(0.0f, static_cast<float>(std::numbers::pi / 180.0f) * 180.0f, 0.0f));
 
 	///            ///
 	/// ゲームループ ///
@@ -88,22 +127,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Inputクラスの更新
 		input->Update();
 
+		//スプライトの更新
 		sprite->Update();
 
-		object3D->Update();
-
-		/*ImGuiの設定*/
+		//3Dオブジェクトの更新
+		object1->Update();
+		object2->Update();
 
 		//ImGuiを起動
 		ImGui::Begin("Debug");
 
+		//スプライトのImGui
 		if (ImGui::TreeNode("Sprite")) {
 
+			//スプライトのデバッグ情報を表示
 			sprite->DisplayImGui();
 
-			if (ImGui::Combo("Texture",&texture,"uvTexture.png\0monsterBall.png\0\0")) {
+			//スプライトのテクスチャ変更
+			if (ImGui::Combo("Texture",&spriteTextureHandler,"uvTexture.png\0monsterBall.png\0\0")) {
 				
-				switch (texture) {
+				switch (spriteTextureHandler) {
 				case 0:
 
 					sprite->ChangeTexture("resources/uvChecker.png");
@@ -120,6 +163,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			ImGui::TreePop();
+		}
+
+		//モデルのImGui
+		if (ImGui::TreeNode("Object1")) {
+
+			object1->DisplayImGui();
+
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Object2")) {
+
+			object2->DisplayImGui();
+
+			ImGui::TreePop();
+
 		}
 
 		//ImGuiの終了
@@ -154,7 +213,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		object3DCommon->CommonDrawSetting();
 
 		//Object3Dの描画
-		object3D->Draw();
+		object1->Draw();
+		object2->Draw();
 
 		//実際のcommandListのImGuiの描画コマンドを積む
 		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());

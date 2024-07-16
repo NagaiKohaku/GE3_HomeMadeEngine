@@ -11,11 +11,11 @@
 
 class Object3DCommon;
 
+class Model;
+
 class Object3D {
 
 public:
-
-	static Object3D* GetInstance();
 
 	void Initialize();
 
@@ -23,22 +23,23 @@ public:
 
 	void Draw();
 
+	void DisplayImGui();
+
+	void SetModel(Model* model) { model_ = model; }
+
+	void SetScale(const Vector3& scale) { transform_.scale = scale; }
+
+	void SetRotate(const Vector3& rotate) { transform_.rotate = rotate; }
+
+	void SetTranslate(const Vector3& translate) { transform_.translate = translate; }
+
+	const Vector3& GetScale() const { return transform_.scale; }
+
+	const Vector3& GetRotate() const { return transform_.rotate; }
+
+	const Vector3& GetTranslate() const { return transform_.translate; }
+
 private:
-
-	//頂点データ
-	struct VertexData {
-		Vector4 position;
-		Vector2 texcoord;
-		Vector3 normal;
-	};
-
-	//マテリアル
-	struct Material {
-		Vector4 color;
-		int32_t enableLighting;
-		float padding[3];
-		Matrix4x4 uvTransform;
-	};
 
 	//座標変換行列データ
 	struct TransformationMatrix {
@@ -60,46 +61,23 @@ private:
 		float intensity;
 	};
 
-	//モデルのマテリアルデータ
-	struct MaterialData {
-
-		std::string textureFilePath;
-		uint32_t textureIndex = 0;
-	};
-
-	//モデルデータ
-	struct ModelData {
-
-		std::vector<VertexData> vertices;
-		MaterialData material;
-	};
-
 	Object3DCommon* object3DCommon_;
 
-	//objファイルのデータ
-	ModelData modelData_;
-
 	//バッファリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> WVPResource_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> DirectionalLightResource_ = nullptr;
 
 	//バッファリソース内のデータを指すポインタ
-	VertexData* vertexData_ = nullptr;
-	Material* materialData_ = nullptr;
 	TransformationMatrix* WVPData_ = nullptr;
 	DirectionalLight* directionalLightData_ = nullptr;
 
-	//バッファリソースの使い道を補足するバッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
-
+	//座標データ
 	Transform transform_;
+
+	//カメラの座標データ
 	Transform cameraTransform_;
 
-
-	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-
-	ModelData LoadObjFile(const std::string& directoryPath, const std::string& filename);
+	//モデル情報
+	Model* model_;
 
 };
