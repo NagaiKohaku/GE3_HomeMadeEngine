@@ -25,7 +25,7 @@ public:
 
 	void DisplayImGui();
 
-	void SetModel(Model* model) { model_ = model; }
+	void SetModel(const std::string& filePath);
 
 	void SetScale(const Vector3& scale) { transform_.scale = scale; }
 

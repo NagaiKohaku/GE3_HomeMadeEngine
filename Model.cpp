@@ -7,12 +7,12 @@
 #include "fstream"
 #include "sstream"
 
-void Model::Initialize() {
+void Model::Initialize(const std::string& directoryPath, const std::string& filename) {
 
 	modelCommon_ = ModelCommon::GetInstance();
 
 	//モデルデータの読み込み
-	modelData_ = LoadObjFile("resources", "plane.obj");
+	modelData_ = LoadObjFile(directoryPath,filename);
 
 	//頂点リソースを作成
 	vertexResource_ = modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());

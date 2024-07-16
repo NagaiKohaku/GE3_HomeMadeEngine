@@ -15,7 +15,7 @@ class Model {
 
 public:
 
-	void Initialize();
+	void Initialize(const std::string& directoryPath, const std::string& filename);
 
 	void Update();
 

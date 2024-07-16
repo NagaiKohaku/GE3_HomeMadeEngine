@@ -3,6 +3,7 @@
 #include "DirectXCommon.h"
 #include "WinApp.h"
 #include "Model.h"
+#include "ModelManager.h"
 #include "math/Pipeline.h"
 
 #include "cassert"
@@ -70,4 +71,10 @@ void Object3D::DisplayImGui() {
 	ImGui::ColorEdit4("Color", &color.x);
 
 	model_->SetColor(color);
+}
+
+void Object3D::SetModel(const std::string& filePath) {
+
+	model_ = ModelManager::GetInstance()->FindModel(filePath);
+
 }

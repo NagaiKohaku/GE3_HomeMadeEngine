@@ -8,6 +8,7 @@
 #include "Object3D.h"
 #include "ModelCommon.h"
 #include "Model.h"
+#include "ModelManager.h"
 
 #include "math/Vector.h"
 #include "others/Log.h"
@@ -54,6 +55,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//TextureManagerの初期化
 	TextureManager::GetInstance()->Initialize();
 
+	//ModelManagerの初期化
+	ModelManager::GetInstance()->Initialize();
+
 	//Inputの静的インスタンスを取得
 	Input* input = Input::GetInstance();
 
@@ -91,15 +95,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	object1->Initialize();
 	object2->Initialize();
 
-	//モデルの生成
-	model = std::make_unique<Model>();
-
-	//モデルの初期化
-	model->Initialize();
+	ModelManager::GetInstance()->LoadModel("plane.obj");
+	ModelManager::GetInstance()->LoadModel("axis.obj");
 
 	//3Dオブジェクトにモデルを設定する
-	object1->SetModel(model.get());
-	object2->SetModel(model.get());
+	object1->SetModel("plane.obj");
+	object2->SetModel("axis.obj");
 
 	//3Dオブジェクトの初期設定
 	object1->SetTranslate(Vector3(-1.5f, 0.0f, 0.0f));
