@@ -1,14 +1,14 @@
 #pragma once
-#include "wrl.h"
 #include "externals/DirectXTex/d3dx12.h"
+
+#include "wrl.h"
 
 class DirectXCommon;
 
-class SpriteCommon {
+class Object3DCommon {
 
 public:
-
-	static SpriteCommon* GetInstance();
+	static Object3DCommon* GetInstance();
 
 	void Initialize();
 
@@ -17,7 +17,7 @@ public:
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
 private:
-	
+
 	void CreateRootSignature();
 
 	void CreateGraphicsPipeline();

@@ -1,13 +1,13 @@
 #pragma once
-#include "stdint.h"
-#include "string"
+#include "Vector.h"
+#include "Matrix.h"
 
-#include "wrl.h"
-
-#include "math/Vector.h"
-#include "math//Matrix.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include "d3d12.h"
+
+#include "stdint.h"
+#include "wrl.h"
+#include "string"
 
 class SpriteCommon;
 

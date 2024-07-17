@@ -2,9 +2,11 @@
 #include "d3d12.h"
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/DirectXTex/d3dx12.h"
+
 #include "string"
 #include "vector"
 #include "wrl.h"
+
 class TextureManager {
 
 public:

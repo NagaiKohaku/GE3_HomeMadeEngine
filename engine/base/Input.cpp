@@ -1,5 +1,6 @@
 #include "Input.h"
 #include "WinApp.h"
+
 #include "cassert"
 
 Input* Input::GetInstance() {

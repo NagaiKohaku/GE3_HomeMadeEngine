@@ -1,7 +1,7 @@
 #include "TextureManager.h"
 #include "DirectXCommon.h"
 
-#include "others/Log.h"
+#include "Log.h"
 
 #include "string"
 #include "cassert"

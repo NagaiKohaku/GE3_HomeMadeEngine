@@ -1,7 +1,7 @@
 #include "Object3DCommon.h"
 #include "DirectXCommon.h"
 
-#include "others/Log.h"
+#include "Log.h"
 
 Object3DCommon* Object3DCommon::GetInstance() {
 	static Object3DCommon instance;

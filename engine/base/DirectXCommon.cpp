@@ -1,7 +1,8 @@
 #include "DirectXCommon.h"
 #include "WinApp.h"
+#include "Log.h"
+
 #include "cassert"
-#include "others/Log.h"
 
 const uint32_t DirectXCommon::kMaxSRVCount = 512;
 

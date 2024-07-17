@@ -1,10 +1,11 @@
 #include "Object3D.h"
-#include "Object3DCommon.h"
-#include "DirectXCommon.h"
 #include "WinApp.h"
+#include "DirectXCommon.h"
+#include "Object3DCommon.h"
 #include "Model.h"
 #include "ModelManager.h"
-#include "math/Pipeline.h"
+
+#include "Pipeline.h"
 
 #include "cassert"
 

@@ -1,8 +1,9 @@
 #include "Model.h"
-#include "ModelCommon.h"
 #include "DirectXCommon.h"
+#include "ModelCommon.h"
 #include "TextureManager.h"
-#include "math/Pipeline.h"
+
+#include "Pipeline.h"
 
 #include "fstream"
 #include "sstream"

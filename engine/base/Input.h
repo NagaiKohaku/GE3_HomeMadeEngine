@@ -1,11 +1,12 @@
 #pragma once
-#include "wrl.h"
 #define DIRECTINPUT_VERSION 0x0800
 #include "dinput.h"
 #include "Windows.h"
 
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
+
+#include "wrl.h"
 
 class WinApp;
 

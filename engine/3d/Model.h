@@ -1,13 +1,13 @@
 #pragma once
-#include "wrl.h"
+#include "Vector.h"
+#include "Matrix.h"
+
+#include "externals/DirectXTex/DirectXTex.h"
+#include "d3d12.h"
 
 #include "string"
 #include "vector"
-
-#include "math/Vector.h"
-#include "math/Matrix.h"
-#include "externals/DirectXTex/DirectXTex.h"
-#include "d3d12.h"
+#include "wrl.h"
 
 class ModelCommon;
 
@@ -16,8 +16,6 @@ class Model {
 public:
 
 	void Initialize(const std::string& directoryPath, const std::string& filename);
-
-	void Update();
 
 	void Draw();
 

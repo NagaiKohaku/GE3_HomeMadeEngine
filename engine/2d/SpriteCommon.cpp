@@ -1,6 +1,7 @@
 #include "SpriteCommon.h"
 #include "DirectXCommon.h"
-#include "others/Log.h"
+
+#include "Log.h"
 
 SpriteCommon* SpriteCommon::GetInstance() {
 	static SpriteCommon instance;

@@ -1,19 +1,19 @@
 #include "WinApp.h"
 #include "DirectXCommon.h"
-#include "SpriteCommon.h"
-#include "TextureManager.h"
 #include "Input.h"
+#include "SpriteCommon.h"
 #include "Sprite.h"
+#include "TextureManager.h"
 #include "Object3DCommon.h"
 #include "Object3D.h"
 #include "ModelCommon.h"
 #include "Model.h"
 #include "ModelManager.h"
 
-#include "math/Vector.h"
-#include "others/Log.h"
-#include "math/Pipeline.h"
-#include "math/Vector3Math.h"
+#include "Vector.h"
+#include "Log.h"
+#include "Pipeline.h"
+#include "Vector3Math.h"
 
 #include "memory"
 #include "vector"
@@ -22,35 +22,41 @@
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
+
+	///               ///
+	/// エンジンの初期化 ///
+	///              ///
+
+
 	//WinAppの静的インスタンスを取得
 	WinApp* winApp = WinApp::GetInstance();
-
 	//WinAppの初期化
 	winApp->Initialize();
 
 	//DirectXCommonの静的インスタンスを取得
 	DirectXCommon* directXCommon = DirectXCommon::GetInstance();
-
 	//DirectXCommonの初期化
 	directXCommon->Initialize();
 
 	//SpriteCommonの静的インスタンスを取得
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
-
 	//SpriteCommonの初期化
 	spriteCommon->Initialize();
 
 	//Object3DCommonの静的インスタンスを取得
 	Object3DCommon* object3DCommon = Object3DCommon::GetInstance();
-
 	//Object3DCommonの初期化
 	object3DCommon->Initialize();
 
 	//ModelCommonの静的インスタンスを取得
 	ModelCommon* modelCommon = ModelCommon::GetInstance();
-
 	//ModelCommonの初期化
 	modelCommon->Initialize();
+
+	//Inputの静的インスタンスを取得
+	Input* input = Input::GetInstance();
+	//Inputの初期化
+	input->Initialize();
 
 	//TextureManagerの初期化
 	TextureManager::GetInstance()->Initialize();
@@ -58,11 +64,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//ModelManagerの初期化
 	ModelManager::GetInstance()->Initialize();
 
-	//Inputの静的インスタンスを取得
-	Input* input = Input::GetInstance();
 
-	//Inputの初期化
-	input->Initialize();
+	///          ///
+	/// 初期化処理 ///
+	///          ///
+
 
 	//スプライト
 	std::unique_ptr<Sprite> sprite;
@@ -95,6 +101,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	object1->Initialize();
 	object2->Initialize();
 
+	//モデルのロード
 	ModelManager::GetInstance()->LoadModel("plane.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 
@@ -108,6 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	object2->SetTranslate(Vector3(1.5f, 0.0f, 0.0f));
 	object2->SetRotate(Vector3(0.0f, static_cast<float>(std::numbers::pi / 180.0f) * 180.0f, 0.0f));
 
+
 	///            ///
 	/// ゲームループ ///
 	///            ///
@@ -119,6 +127,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		if (winApp->ProcessMessage()) {
 			break;
 		}
+
+
+		///        ///
+		/// 更新処理 ///
+		///        ///
+
 
 		//ここからImGuiのフレームが始まる
 		ImGui_ImplDX12_NewFrame();
@@ -186,13 +200,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		ImGui::End();
 
 		//ImGuiの内部コマンドを生成する
-		//ゲームの処理が終わった後でなければならない
 		ImGui::Render();
 
 
-		///                         ///
-		/// 画面にオブジェクトを表示する ///
-		///                        ///
+		///        ///
+		/// 描画処理 ///
+		///        ///
 
 
 		//描画前処理
@@ -223,36 +236,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//描画後処理
 		directXCommon->PostDraw();
 
-		///                               ///
-		/// 画面にオブジェクトを表示する (終了) ///
-		///                              ///
-
 	}
 
 
-	///                  ///
-	/// ゲームループ (終了) ///
-	///                  ///
+	///        ///
+	/// 終了処理 ///
+	///        ///
 
 
-	///               ///
-	/// オブジェクト解放 ///
-	///               ///
-
-
-	/*各オブジェクトの開放処理*/
-
+	//ImGuiの終了処理
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 
 	//WinAppの終了処理
 	winApp->Finalize();
-
-
-	///                     ///
-	/// オブジェクト解放 (終了) ///
-	///                     ///
 
 	return 0;
 }
