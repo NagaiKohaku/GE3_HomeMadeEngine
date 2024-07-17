@@ -5,6 +5,8 @@
 
 class DirectXCommon;
 
+class Camera;
+
 class Object3DCommon {
 
 public:
@@ -16,13 +18,19 @@ public:
 
 	DirectXCommon* GetDxCommon() const { return dxCommon_; }
 
+	void SetDefaultCamera(Camera* camera) { defaultCamera_ = camera; }
+
+	Camera* GetDefaultCamera() const { return defaultCamera_; }
+
 private:
 
 	void CreateRootSignature();
 
 	void CreateGraphicsPipeline();
 
-	DirectXCommon* dxCommon_;
+	DirectXCommon* dxCommon_ = nullptr;
+
+	Camera* defaultCamera_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 

@@ -9,6 +9,7 @@
 #include "ModelCommon.h"
 #include "Model.h"
 #include "ModelManager.h"
+#include "Camera.h"
 
 #include "Vector.h"
 #include "Log.h"
@@ -70,6 +71,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///          ///
 
 
+	//カメラ
+	std::unique_ptr<Camera> camera;
+
 	//スプライト
 	std::unique_ptr<Sprite> sprite;
 
@@ -82,6 +86,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//スプライトのテクスチャハンドラー
 	int spriteTextureHandler;
+
+	//カメラを生成
+	camera = std::make_unique<Camera>();
+
+	camera->SetRotate({ 0.3f,0.0f,0.0f });
+	camera->SetTranslate({ 0.0f,4.0f,-10.0f });
+
+	object3DCommon->SetDefaultCamera(camera.get());
 
 	//スプライトを生成
 	sprite = std::make_unique<Sprite>();
@@ -142,6 +154,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Inputクラスの更新
 		input->Update();
 
+		//カメラの更新
+		camera->Update();
+
 		//スプライトの更新
 		sprite->Update();
 
@@ -151,6 +166,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//ImGuiを起動
 		ImGui::Begin("Debug");
+
+		if (ImGui::TreeNode("Camera")) {
+
+			camera->DisplayImGui();
+
+			ImGui::TreePop();
+		}
 
 		//スプライトのImGui
 		if (ImGui::TreeNode("Sprite")) {

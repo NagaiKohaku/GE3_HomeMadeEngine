@@ -13,6 +13,8 @@ class Object3DCommon;
 
 class Model;
 
+class Camera;
+
 class Object3D {
 
 public:
@@ -26,6 +28,8 @@ public:
 	void DisplayImGui();
 
 	void SetModel(const std::string& filePath);
+
+	void SetCamera(Camera* camera) { camera_ = camera; }
 
 	void SetScale(const Vector3& scale) { transform_.scale = scale; }
 
@@ -63,6 +67,8 @@ private:
 
 	Object3DCommon* object3DCommon_;
 
+	Camera* camera_;
+
 	//バッファリソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> WVPResource_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Resource> DirectionalLightResource_ = nullptr;
@@ -73,9 +79,6 @@ private:
 
 	//座標データ
 	Transform transform_;
-
-	//カメラの座標データ
-	Transform cameraTransform_;
 
 	//モデル情報
 	Model* model_;

@@ -1,5 +1,6 @@
 #include "Object3DCommon.h"
 #include "DirectXCommon.h"
+#include "Camera.h"
 
 #include "Log.h"
 

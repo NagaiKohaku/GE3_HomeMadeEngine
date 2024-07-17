@@ -4,6 +4,7 @@
 #include "Object3DCommon.h"
 #include "Model.h"
 #include "ModelManager.h"
+#include "Camera.h"
 
 #include "Pipeline.h"
 
@@ -34,7 +35,8 @@ void Object3D::Initialize() {
 
 	//Transformの設定
 	transform_ = { {1.0f,1.0f,1.0f},{0.0f,0.0f,0.0f},{0.0f,0.0f,0.0f} };
-	cameraTransform_ = { {1.0f,1.0f,1.0f},{0.3f,0.0f,0.0f},{0.0f,4.0f,-10.0f} };
+
+	camera_ = object3DCommon_->GetDefaultCamera();
 
 }
 
@@ -42,11 +44,16 @@ void Object3D::Update() {
 
 	Matrix4x4 worldMatrix = Pipeline::MakeAffineMatrix(transform_.scale, transform_.rotate, transform_.translate);
 
-	Matrix4x4 viewMatrix = Pipeline::Inverse(Pipeline::MakeAffineMatrix(cameraTransform_.scale, cameraTransform_.rotate, cameraTransform_.translate));
+	Matrix4x4 worldViewProjectionMatrix;
 
-	Matrix4x4 projectionMatrix = Pipeline::MakePerspectiveFovMatrix(0.45f, float(WinApp::kClientWidth) / float(WinApp::kClientHeight), 0.1f, 100.0f);
+	if (camera_) {
+		const Matrix4x4& viewProjectionMatrix = camera_->GetViewProjectionMatrix();
+		worldViewProjectionMatrix = Pipeline::Multiply(worldMatrix, viewProjectionMatrix);
+	} else {
+		worldViewProjectionMatrix = worldMatrix;
+	}
 
-	WVPData_->WVP = Pipeline::Multiply(worldMatrix, Pipeline::Multiply(viewMatrix, projectionMatrix));
+	WVPData_->WVP = worldViewProjectionMatrix;
 	WVPData_->World = worldMatrix;
 }
 
