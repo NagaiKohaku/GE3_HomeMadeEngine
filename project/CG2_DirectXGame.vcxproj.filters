@@ -129,8 +129,8 @@
     <ClCompile Include="engine\base\WinApp.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="engine\base\Camera.cpp">
+      <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -206,8 +206,8 @@
     <ClInclude Include="engine\base\DirectXCommon.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="engine\base\Camera.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
