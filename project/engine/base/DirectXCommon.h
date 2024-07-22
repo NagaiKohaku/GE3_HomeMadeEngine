@@ -67,12 +67,6 @@ public:
 	//コマンドリストのゲッター
 	ID3D12GraphicsCommandList* GetCommandList() { return commandList_.Get(); }
 
-	//SRVディスクリプターヒープのゲッター
-	ID3D12DescriptorHeap* GetSRVDescriptorHeap() { return srvDescriptorHeap_.Get(); }
-
-	//SRVディスクリプターヒープのサイズのゲッター
-	uint32_t GetSRVDescriptorSize() { return descriptorSizeSRV_; }
-
 	//シェーダーファイルのコンパイル
 	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
 		const std::wstring& filePath,
@@ -81,6 +75,13 @@ public:
 
 	//ResourceObjectの生成
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+
+	//デスクリプタヒープの生成
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(
+		D3D12_DESCRIPTOR_HEAP_TYPE heapType,
+		UINT numDescriptors,
+		bool shaderVisible
+	);
 
 	//最大SRV数
 	static const uint32_t kMaxSRVCount;
@@ -129,13 +130,6 @@ private:
 	//FPS固定更新
 	void UpdateFixFPS();
 
-	//デスクリプタヒープの生成
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(
-		D3D12_DESCRIPTOR_HEAP_TYPE heapType,
-		UINT numDescriptors,
-		bool shaderVisible
-	);
-
 	//CPUデスクリプタヒープのゲッター
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& descriptorHeap, uint32_t descriptorSize, uint32_t index);
 
@@ -172,15 +166,11 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStancilResource_ = nullptr;
 
 	//各種でスクリプタのサイズ
-	uint32_t descriptorSizeSRV_;
 	uint32_t descriptorSizeRTV_;
 	uint32_t descriptorSizeDSV_;
 
 	//RTVデスクリプタヒープ
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_;
-
-	//SRVデスクリプタヒープ
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_;
 
 	//DSVデスクリプタヒープ
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_;

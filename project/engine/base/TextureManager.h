@@ -3,9 +3,14 @@
 #include "externals/DirectXTex/DirectXTex.h"
 #include "externals/DirectXTex/d3dx12.h"
 
+#include "unordered_map"
 #include "string"
 #include "vector"
 #include "wrl.h"
+
+class DirectXCommon;
+
+class SrvManager;
 
 class TextureManager {
 
@@ -14,13 +19,13 @@ public:
 
 	void Initialize();
 
-	uint32_t LoadTexture(const std::string& filePath);
+	void LoadTexture(const std::string& filePath);
 
-	uint32_t GetTextureIndexByFilePath(const std::string& filePath);
+	const DirectX::TexMetadata& GetMetaData(const std::string& filePath);
 
-	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(uint32_t textureIndex);
+	uint32_t GetSrvIndex(const std::string& filePath);
 
-	const DirectX::TexMetadata& GetMetaData(uint32_t textureIndex);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSrvHandleGPU(const std::string& filePath);
 
 	static uint32_t kSRVIndexTop;
 
@@ -31,11 +36,16 @@ private:
 		DirectX::TexMetadata metaData;
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
 		Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource;
+		uint32_t srvIndex;
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU;
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU;
 	};
 
-	std::vector<TextureData> textureDatas;
+	DirectXCommon* directXCommon_ = nullptr;
+
+	SrvManager* srvManager_ = nullptr;
+
+	std::unordered_map<std::string, TextureData> textureDatas;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metadata);
 
@@ -44,9 +54,4 @@ private:
 		Microsoft::WRL::ComPtr<ID3D12Resource> texture,
 		const DirectX::ScratchImage& mipImages
 	);
-
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandle(uint32_t index);
-
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle(uint32_t index);
-
 };

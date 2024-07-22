@@ -109,7 +109,7 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
-	uint32_t textureIndex_;
+	std::string texturePath_;
 
 	Vector2 position_{ 0.0f,0.0f };
 	float rotation_ = 0.0f;

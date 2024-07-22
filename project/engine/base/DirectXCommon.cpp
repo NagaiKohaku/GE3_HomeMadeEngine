@@ -4,8 +4,6 @@
 
 #include "cassert"
 
-const uint32_t DirectXCommon::kMaxSRVCount = 512;
-
 DirectXCommon* DirectXCommon::GetInstance() {
 	static DirectXCommon instance;
 	return &instance;
@@ -259,13 +257,11 @@ void DirectXCommon::InitializeDepthBuffer() {
 void DirectXCommon::InitializeDescriptorHeap() {
 
 	//各種デスクリプタのサイズを取得
-	descriptorSizeSRV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	descriptorSizeRTV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	descriptorSizeDSV_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
 	//各種デスクリプタを生成
 	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
-	srvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, kMaxSRVCount, true);
 	dsvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
 }
@@ -377,19 +373,19 @@ void DirectXCommon::InitializeDXCCompile() {
 
 void DirectXCommon::InitializeImGui() {
 
-	//ImGuiの初期化
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(winApp->GetHwnd());
-	ImGui_ImplDX12_Init(
-		device_.Get(),
-		2,
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		srvDescriptorHeap_.Get(),
-		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
-		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
-	);
+	////ImGuiの初期化
+	//IMGUI_CHECKVERSION();
+	//ImGui::CreateContext();
+	//ImGui::StyleColorsDark();
+	//ImGui_ImplWin32_Init(winApp->GetHwnd());
+	//ImGui_ImplDX12_Init(
+	//	device_.Get(),
+	//	2,
+	//	DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+	//	srvDescriptorHeap_.Get(),
+	//	srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
+	//	srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
+	//);
 
 }
 

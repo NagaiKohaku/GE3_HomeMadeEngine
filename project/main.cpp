@@ -1,5 +1,6 @@
 #include "WinApp.h"
 #include "DirectXCommon.h"
+#include "SrvManager.h"
 #include "Input.h"
 #include "SpriteCommon.h"
 #include "Sprite.h"
@@ -38,6 +39,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DirectXCommon* directXCommon = DirectXCommon::GetInstance();
 	//DirectXCommonの初期化
 	directXCommon->Initialize();
+
+	//SrvManagerの静的インスタンスを取得
+	SrvManager* srvManager = SrvManager::GetInstance();
+	//SrvManagerの初期化
+	srvManager->Initialize();
 
 	//SpriteCommonの静的インスタンスを取得
 	SpriteCommon* spriteCommon = SpriteCommon::GetInstance();
@@ -84,9 +90,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//モデル
 	std::unique_ptr<Model> model;
 
-	//スプライトのテクスチャハンドラー
-	int spriteTextureHandler;
-
 	//カメラを生成
 	camera = std::make_unique<Camera>();
 
@@ -127,7 +130,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	object2->SetTranslate(Vector3(1.5f, 0.0f, 0.0f));
 	object2->SetRotate(Vector3(0.0f, static_cast<float>(std::numbers::pi / 180.0f) * 180.0f, 0.0f));
 
-
 	///            ///
 	/// ゲームループ ///
 	///            ///
@@ -146,10 +148,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///        ///
 
 
-		//ここからImGuiのフレームが始まる
-		ImGui_ImplDX12_NewFrame();
-		ImGui_ImplWin32_NewFrame();
-		ImGui::NewFrame();
+		////ここからImGuiのフレームが始まる
+		//ImGui_ImplDX12_NewFrame();
+		//ImGui_ImplWin32_NewFrame();
+		//ImGui::NewFrame();
 
 		//Inputクラスの更新
 		input->Update();
@@ -164,65 +166,65 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		object1->Update();
 		object2->Update();
 
-		//ImGuiを起動
-		ImGui::Begin("Debug");
+		////ImGuiを起動
+		//ImGui::Begin("Debug");
 
-		if (ImGui::TreeNode("Camera")) {
+		//if (ImGui::TreeNode("Camera")) {
 
-			camera->DisplayImGui();
+		//	camera->DisplayImGui();
 
-			ImGui::TreePop();
-		}
+		//	ImGui::TreePop();
+		//}
 
-		//スプライトのImGui
-		if (ImGui::TreeNode("Sprite")) {
+		////スプライトのImGui
+		//if (ImGui::TreeNode("Sprite")) {
 
-			//スプライトのデバッグ情報を表示
-			sprite->DisplayImGui();
+		//	//スプライトのデバッグ情報を表示
+		//	sprite->DisplayImGui();
 
-			//スプライトのテクスチャ変更
-			if (ImGui::Combo("Texture",&spriteTextureHandler,"uvTexture.png\0monsterBall.png\0\0")) {
-				
-				switch (spriteTextureHandler) {
-				case 0:
+		//	//スプライトのテクスチャ変更
+		//	if (ImGui::Combo("Texture",&spriteTextureHandler,"uvTexture.png\0monsterBall.png\0\0")) {
+		//		
+		//		switch (spriteTextureHandler) {
+		//		case 0:
 
-					sprite->ChangeTexture("resources/uvChecker.png");
-					
-					break;
-				case 1:
+		//			sprite->ChangeTexture("resources/uvChecker.png");
+		//			
+		//			break;
+		//		case 1:
 
-					sprite->ChangeTexture("resources/monsterBall.png");
-					
-					break;
-				default:
-					break;
-				}
-			}
+		//			sprite->ChangeTexture("resources/monsterBall.png");
+		//			
+		//			break;
+		//		default:
+		//			break;
+		//		}
+		//	}
 
-			ImGui::TreePop();
-		}
+		//	ImGui::TreePop();
+		//}
 
-		//モデルのImGui
-		if (ImGui::TreeNode("Object1")) {
+		////モデルのImGui
+		//if (ImGui::TreeNode("Object1")) {
 
-			object1->DisplayImGui();
+		//	object1->DisplayImGui();
 
-			ImGui::TreePop();
-		}
+		//	ImGui::TreePop();
+		//}
 
-		if (ImGui::TreeNode("Object2")) {
+		//if (ImGui::TreeNode("Object2")) {
 
-			object2->DisplayImGui();
+		//	object2->DisplayImGui();
 
-			ImGui::TreePop();
+		//	ImGui::TreePop();
 
-		}
+		//}
 
-		//ImGuiの終了
-		ImGui::End();
+		////ImGuiの終了
+		//ImGui::End();
 
-		//ImGuiの内部コマンドを生成する
-		ImGui::Render();
+		////ImGuiの内部コマンドを生成する
+		//ImGui::Render();
 
 
 		///        ///
@@ -236,11 +238,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Spriteの描画準備
 		spriteCommon->CommonDrawSetting();
 
-		//ImGui描画用のDescriptorHeapの設定
-		ID3D12DescriptorHeap* descriptorHeap[] = { directXCommon->GetSRVDescriptorHeap() };
-
-		//ImGuiの設定
-		directXCommon->GetCommandList()->SetDescriptorHeaps(1, descriptorHeap);
+		//SRVの設定
+		srvManager->PreDraw();
 
 		//Spriteの描画
 		sprite->Draw();
@@ -252,8 +251,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		object1->Draw();
 		object2->Draw();
 
-		//実際のcommandListのImGuiの描画コマンドを積む
-		ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());
+		////実際のcommandListのImGuiの描画コマンドを積む
+		//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());
 
 		//描画後処理
 		directXCommon->PostDraw();
@@ -266,10 +265,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///        ///
 
 
-	//ImGuiの終了処理
-	ImGui_ImplDX12_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+	////ImGuiの終了処理
+	//ImGui_ImplDX12_Shutdown();
+	//ImGui_ImplWin32_Shutdown();
+	//ImGui::DestroyContext();
 
 	//WinAppの終了処理
 	winApp->Finalize();
