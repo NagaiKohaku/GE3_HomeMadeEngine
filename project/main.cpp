@@ -93,6 +93,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//カメラ
 	std::unique_ptr<Camera> camera;
 
+	//エミッター
 	std::unique_ptr<ParticleEmitter> emitter;
 
 	//3Dオブジェクト
@@ -104,13 +105,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//カメラを生成
 	camera = std::make_unique<Camera>();
 
+	//カメラの設定
 	camera->SetRotate({ 0.3f,0.0f,0.0f });
 	camera->SetTranslate({ 0.0f,4.0f,-10.0f });
 
+	//3Dオブジェクトのカメラ情報を設定
 	object3DCommon->SetDefaultCamera(camera.get());
 
+	//パーティクルのカメラ情報を設定
 	particleManager->SetDefaultCamera(camera.get());
 
+	//エミッターの生成
 	emitter = std::make_unique<ParticleEmitter>();
 
 	//3Dオブジェクトの生成
@@ -147,15 +152,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//imguiの更新前処理
 		imGuiManager->Begin();
 
+		//パーティクルの更新
 		particleManager->Update();
+
+		//エミッターの更新
+		emitter->Update();
 
 		//Inputクラスの更新
 		input->Update();
 
 		//カメラの更新
 		camera->Update();
-
-		emitter->Update();
 
 		//3Dオブジェクトの更新
 		object1->Update();
@@ -184,6 +191,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//imguiの描画前処理
 		imGuiManager->End();
 
+
 		///        ///
 		/// 描画処理 ///
 		///        ///
@@ -204,6 +212,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//Object3Dの描画
 		object1->Draw();
 
+		//パーティクルの描画
 		particleManager->Draw();
 
 		//imguiの描画処理
@@ -218,6 +227,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	///        ///
 	/// 終了処理 ///
 	///        ///
+
 
 	//ImGuiManagerの終了処理
 	imGuiManager->Finalize();
