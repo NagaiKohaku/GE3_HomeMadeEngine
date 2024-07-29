@@ -95,21 +95,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<ParticleEmitter> emitter;
 
-	////パーティクルグループ
-	//particleManager->CreateParticleGroup("particle", "resources/circle.png");
-
-	//particleManager->CreateParticleGroup("uvParticle", "resources/uvChecker.png");
-
-	//particleManager->SetAcceleration("particle", { 15.0f,0.0f,0.0f });
-
-	//particleManager->SetAcceleration("uvParticle", { -15.0f,0.0f,0.0f });
-
-	////スプライト
-	//std::unique_ptr<Sprite> sprite;
-
 	//3Dオブジェクト
 	std::unique_ptr<Object3D> object1;
-	//std::unique_ptr<Object3D> object2;
 
 	//モデル
 	std::unique_ptr<Model> model;
@@ -126,39 +113,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	emitter = std::make_unique<ParticleEmitter>();
 
-	////スプライトを生成
-	//sprite = std::make_unique<Sprite>();
-
-	////スプライトの初期化
-	//sprite->Initialize("resources/uvChecker.png");
-
-	////スプライトの初期設定
-	//sprite->SetPosition(Vector2(sprite->GetSize().x / 2.0f, sprite->GetSize().y / 2.0f));
-	//sprite->SetAnchorPoint(Vector2(0.5f, 0.5f));
-
 	//3Dオブジェクトの生成
 	object1 = std::make_unique<Object3D>();
-	//object2 = std::make_unique<Object3D>();
 
 	//3Dオブジェクトの初期化
 	object1->Initialize();
-	//object2->Initialize();
 
 	//モデルのロード
-	ModelManager::GetInstance()->LoadModel("plane.obj");
-	ModelManager::GetInstance()->LoadModel("axis.obj");
-
 	ModelManager::GetInstance()->CreateSphere("monsterBall.png");
 
 	//3Dオブジェクトにモデルを設定する
 	object1->SetModel("monsterBall.png");
-	//object2->SetModel("axis.obj");
 
-	////3Dオブジェクトの初期設定
-	//object1->SetTranslate(Vector3(-1.5f, 0.0f, 0.0f));
-	//object1->SetRotate(Vector3(0.0f, static_cast<float>(std::numbers::pi / 180.0f) * 180.0f, 0.0f));
-	//object2->SetTranslate(Vector3(1.5f, 0.0f, 0.0f));
-	//object2->SetRotate(Vector3(0.0f, static_cast<float>(std::numbers::pi / 180.0f) * 180.0f, 0.0f));
 
 	///            ///
 	/// ゲームループ ///
@@ -191,12 +157,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		emitter->Update();
 
-		////スプライトの更新
-		//sprite->Update();
-
 		//3Dオブジェクトの更新
 		object1->Update();
-		//object2->Update();
 
 		//ImGuiを起動
 		ImGui::Begin("Debug");
@@ -208,34 +170,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ImGui::TreePop();
 		}
 
-		////スプライトのImGui
-		//if (ImGui::TreeNode("Sprite")) {
-
-		//	//スプライトのデバッグ情報を表示
-		//	sprite->DisplayImGui();
-
-		//	//スプライトのテクスチャ変更
-		//	if (ImGui::Combo("Texture",&spriteTextureHandler,"uvTexture.png\0monsterBall.png\0\0")) {
-		//		
-		//		switch (spriteTextureHandler) {
-		//		case 0:
-
-		//			sprite->ChangeTexture("resources/uvChecker.png");
-		//			
-		//			break;
-		//		case 1:
-
-		//			sprite->ChangeTexture("resources/monsterBall.png");
-		//			
-		//			break;
-		//		default:
-		//			break;
-		//		}
-		//	}
-
-		//	ImGui::TreePop();
-		//}
-
 		//モデルのImGui
 		if (ImGui::TreeNode("Object1")) {
 
@@ -243,14 +177,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			ImGui::TreePop();
 		}
-
-		//if (ImGui::TreeNode("Object2")) {
-
-		//	object2->DisplayImGui();
-
-		//	ImGui::TreePop();
-
-		//}
 
 		//ImGuiの終了
 		ImGui::End();
@@ -272,15 +198,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//SRVの設定
 		srvManager->PreDraw();
 
-		////Spriteの描画
-		//sprite->Draw();
-
 		//3DObjectの描画準備
 		object3DCommon->CommonDrawSetting();
 
 		//Object3Dの描画
 		object1->Draw();
-		//object2->Draw();
 
 		particleManager->Draw();
 
