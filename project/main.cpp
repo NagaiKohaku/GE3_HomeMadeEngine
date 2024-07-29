@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
+#include "ImGuiManager.h"
 
 #include "Vector.h"
 #include "Log.h"
@@ -62,14 +63,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//ModelCommonの初期化
 	modelCommon->Initialize();
 
+	//ParticleManagetの静的インスタンスを取得
 	ParticleManager* particleManager = ParticleManager::GetInstance();
-
+	//ParticleManagerの初期化
 	particleManager->Initialize();
 
 	//Inputの静的インスタンスを取得
 	Input* input = Input::GetInstance();
 	//Inputの初期化
 	input->Initialize();
+
+	//ImGuiManagerの静的インスタンスを取得
+	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
+	//ImGuiManagerの初期化
+	imGuiManager->Initialize();
 
 	//TextureManagerの初期化
 	TextureManager::GetInstance()->Initialize();
@@ -88,20 +95,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	std::unique_ptr<ParticleEmitter> emitter;
 
-	//パーティクルグループ
-	particleManager->CreateParticleGroup("particle", "resources/circle.png");
+	////パーティクルグループ
+	//particleManager->CreateParticleGroup("particle", "resources/circle.png");
 
-	particleManager->CreateParticleGroup("uvParticle", "resources/uvChecker.png");
+	//particleManager->CreateParticleGroup("uvParticle", "resources/uvChecker.png");
 
-	particleManager->SetAcceleration("particle", { 15.0f,0.0f,0.0f });
+	//particleManager->SetAcceleration("particle", { 15.0f,0.0f,0.0f });
 
-	particleManager->SetAcceleration("uvParticle", { -15.0f,0.0f,0.0f });
+	//particleManager->SetAcceleration("uvParticle", { -15.0f,0.0f,0.0f });
 
 	////スプライト
 	//std::unique_ptr<Sprite> sprite;
 
-	////3Dオブジェクト
-	//std::unique_ptr<Object3D> object1;
+	//3Dオブジェクト
+	std::unique_ptr<Object3D> object1;
 	//std::unique_ptr<Object3D> object2;
 
 	//モデル
@@ -129,20 +136,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//sprite->SetPosition(Vector2(sprite->GetSize().x / 2.0f, sprite->GetSize().y / 2.0f));
 	//sprite->SetAnchorPoint(Vector2(0.5f, 0.5f));
 
-	////3Dオブジェクトの生成
-	//object1 = std::make_unique<Object3D>();
+	//3Dオブジェクトの生成
+	object1 = std::make_unique<Object3D>();
 	//object2 = std::make_unique<Object3D>();
 
-	////3Dオブジェクトの初期化
-	//object1->Initialize();
+	//3Dオブジェクトの初期化
+	object1->Initialize();
 	//object2->Initialize();
 
 	//モデルのロード
 	ModelManager::GetInstance()->LoadModel("plane.obj");
 	ModelManager::GetInstance()->LoadModel("axis.obj");
 
-	////3Dオブジェクトにモデルを設定する
-	//object1->SetModel("plane.obj");
+	ModelManager::GetInstance()->CreateSphere("monsterBall.png");
+
+	//3Dオブジェクトにモデルを設定する
+	object1->SetModel("monsterBall.png");
 	//object2->SetModel("axis.obj");
 
 	////3Dオブジェクトの初期設定
@@ -169,10 +178,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///        ///
 
 
-		////ここからImGuiのフレームが始まる
-		//ImGui_ImplDX12_NewFrame();
-		//ImGui_ImplWin32_NewFrame();
-		//ImGui::NewFrame();
+		//imguiの更新前処理
+		imGuiManager->Begin();
 
 		particleManager->Update();
 
@@ -187,19 +194,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		////スプライトの更新
 		//sprite->Update();
 
-		////3Dオブジェクトの更新
-		//object1->Update();
+		//3Dオブジェクトの更新
+		object1->Update();
 		//object2->Update();
 
-		////ImGuiを起動
-		//ImGui::Begin("Debug");
+		//ImGuiを起動
+		ImGui::Begin("Debug");
 
-		//if (ImGui::TreeNode("Camera")) {
+		if (ImGui::TreeNode("Camera")) {
 
-		//	camera->DisplayImGui();
+			camera->DisplayImGui();
 
-		//	ImGui::TreePop();
-		//}
+			ImGui::TreePop();
+		}
 
 		////スプライトのImGui
 		//if (ImGui::TreeNode("Sprite")) {
@@ -229,13 +236,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//	ImGui::TreePop();
 		//}
 
-		////モデルのImGui
-		//if (ImGui::TreeNode("Object1")) {
+		//モデルのImGui
+		if (ImGui::TreeNode("Object1")) {
 
-		//	object1->DisplayImGui();
+			object1->DisplayImGui();
 
-		//	ImGui::TreePop();
-		//}
+			ImGui::TreePop();
+		}
 
 		//if (ImGui::TreeNode("Object2")) {
 
@@ -245,12 +252,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//}
 
-		////ImGuiの終了
-		//ImGui::End();
+		//ImGuiの終了
+		ImGui::End();
 
-		////ImGuiの内部コマンドを生成する
-		//ImGui::Render();
-
+		//imguiの描画前処理
+		imGuiManager->End();
 
 		///        ///
 		/// 描画処理 ///
@@ -268,18 +274,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		////Spriteの描画
 		//sprite->Draw();
-		//
+
 		//3DObjectの描画準備
 		object3DCommon->CommonDrawSetting();
 
-		////Object3Dの描画
-		//object1->Draw();
+		//Object3Dの描画
+		object1->Draw();
 		//object2->Draw();
 
 		particleManager->Draw();
 
-		////実際のcommandListのImGuiの描画コマンドを積む
-		//ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCommon->GetCommandList());
+		//imguiの描画処理
+		imGuiManager->Draw();
 
 		//描画後処理
 		directXCommon->PostDraw();
@@ -291,11 +297,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// 終了処理 ///
 	///        ///
 
-
-	////ImGuiの終了処理
-	//ImGui_ImplDX12_Shutdown();
-	//ImGui_ImplWin32_Shutdown();
-	//ImGui::DestroyContext();
+	//ImGuiManagerの終了処理
+	imGuiManager->Finalize();
 
 	//WinAppの終了処理
 	winApp->Finalize();

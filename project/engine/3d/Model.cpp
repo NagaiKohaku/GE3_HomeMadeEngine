@@ -7,6 +7,7 @@
 
 #include "fstream"
 #include "sstream"
+#include "numbers"
 
 void Model::Initialize(const std::string& directoryPath, const std::string& filename) {
 
@@ -46,6 +47,44 @@ void Model::Initialize(const std::string& directoryPath, const std::string& file
 	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
 }
 
+void Model::InitializeSphere(const std::string& directoryPath, const std::string& filename) {
+
+	modelCommon_ = ModelCommon::GetInstance();
+
+	CreateSphereModel();
+
+	//頂点リソースを作成
+	vertexResource_ = modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
+
+	//マテリアルリソースを作成
+	materialResource_ = modelCommon_->GetDxCommon()->CreateBufferResource(sizeof(Material));
+
+	//リソースの先頭のアドレスを取得する
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+
+	//使用するリソースのサイズを設定
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size());
+
+	//1頂点当たりのサイズを設定
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+
+	//書き込むためのアドレスを取得する
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+
+	//頂点データの設定
+	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size());
+
+	//マテリアルデータの設定
+	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialData_->enableLighting = true;
+	materialData_->uvTransform = Pipeline::MakeIdentity4x4();
+
+	modelData_.material.textureFilePath = directoryPath + "/" + filename;
+
+	TextureManager::GetInstance()->LoadTexture(modelData_.material.textureFilePath);
+}
+
 void Model::Draw() {
 
 	modelCommon_->GetDxCommon()->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
@@ -55,6 +94,119 @@ void Model::Draw() {
 	modelCommon_->GetDxCommon()->GetCommandList()->SetGraphicsRootDescriptorTable(2, TextureManager::GetInstance()->GetSrvHandleGPU(modelData_.material.textureFilePath));
 
 	modelCommon_->GetDxCommon()->GetCommandList()->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+
+}
+
+void Model::CreateSphereModel() {
+
+	//分割数
+	const uint32_t kSubDivision = 16;
+
+	//経度1つ分の角度 φ
+	const float kLonEvery = static_cast<float>(std::numbers::pi) * 2.0f / float(kSubDivision);
+
+	//緯度の1つ分の角度 θ
+	const float kLatEvery = static_cast<float>(std::numbers::pi) / float(kSubDivision);
+
+	//緯度の方向に分割
+	for (uint32_t latIndex = 0; latIndex < kSubDivision; ++latIndex) {
+
+		float lat = -static_cast<float>(std::numbers::pi) / 2.0f + kLatEvery * latIndex; //θ
+
+		//緯度の方向に分割しながら線を描く
+		for (uint32_t lonIndex = 0; lonIndex < kSubDivision; ++lonIndex) {
+
+			float lon = lonIndex * kLonEvery; //φ
+			uint32_t start = (latIndex * kSubDivision + lonIndex) * 6;
+
+			VertexData vertexData[6];
+
+			//基準点a 左下
+			vertexData[0].position.x = cosf(lat) * cosf(lon);
+			vertexData[0].position.y = sinf(lat);
+			vertexData[0].position.z = cosf(lat) * sinf(lon);
+			vertexData[0].position.w = 1.0f;
+			vertexData[0].texcoord = {
+				float(lonIndex) / float(kSubDivision),
+				1.0f - float(latIndex) / float(kSubDivision)
+			};
+			vertexData[0].normal.x = vertexData[0].position.x;
+			vertexData[0].normal.y = vertexData[0].position.y;
+			vertexData[0].normal.z = vertexData[0].position.z;
+
+			//基準点b 左上
+			vertexData[1].position.x = cosf(lat + kLatEvery) * cosf(lon);
+			vertexData[1].position.y = sinf(lat + kLatEvery);
+			vertexData[1].position.z = cosf(lat + kLatEvery) * sinf(lon);
+			vertexData[1].position.w = 1.0f;
+			vertexData[1].texcoord = {
+				float(lonIndex) / float(kSubDivision),
+				1.0f - float(latIndex + 1) / float(kSubDivision)
+			};
+			vertexData[1].normal.x = vertexData[1].position.x;
+			vertexData[1].normal.y = vertexData[1].position.y;
+			vertexData[1].normal.z = vertexData[1].position.z;
+
+			//基準点c 右下
+			vertexData[2].position.x = cosf(lat) * cosf(lon + kLonEvery);
+			vertexData[2].position.y = sinf(lat);
+			vertexData[2].position.z = cosf(lat) * sinf(lon + kLonEvery);
+			vertexData[2].position.w = 1.0f;
+			vertexData[2].texcoord = {
+				float(lonIndex + 1) / float(kSubDivision),
+				1.0f - float(latIndex) / float(kSubDivision)
+			};
+			vertexData[2].normal.x = vertexData[2].position.x;
+			vertexData[2].normal.y = vertexData[2].position.y;
+			vertexData[2].normal.z = vertexData[2].position.z;
+
+			//基準点b 左上
+			vertexData[3].position.x = cosf(lat + kLatEvery) * cosf(lon);
+			vertexData[3].position.y = sinf(lat + kLatEvery);
+			vertexData[3].position.z = cosf(lat + kLatEvery) * sinf(lon);
+			vertexData[3].position.w = 1.0f;
+			vertexData[3].texcoord = {
+				float(lonIndex) / float(kSubDivision),
+				1.0f - float(latIndex + 1) / float(kSubDivision)
+			};
+			vertexData[3].normal.x = vertexData[3].position.x;
+			vertexData[3].normal.y = vertexData[3].position.y;
+			vertexData[3].normal.z = vertexData[3].position.z;
+
+			//基準点d 右上
+			vertexData[4].position.x = cosf(lat + kLatEvery) * cosf(lon + kLonEvery);
+			vertexData[4].position.y = sinf(lat + kLatEvery);
+			vertexData[4].position.z = cosf(lat + kLatEvery) * sinf(lon + kLonEvery);
+			vertexData[4].position.w = 1.0f;
+			vertexData[4].texcoord = {
+				float(lonIndex + 1) / float(kSubDivision),
+				1.0f - float(latIndex + 1) / float(kSubDivision)
+			};
+			vertexData[4].normal.x = vertexData[4].position.x;
+			vertexData[4].normal.y = vertexData[4].position.y;
+			vertexData[4].normal.z = vertexData[4].position.z;
+
+			//基準点c 右下
+			vertexData[5].position.x = cosf(lat) * cosf(lon + kLonEvery);
+			vertexData[5].position.y = sinf(lat);
+			vertexData[5].position.z = cosf(lat) * sinf(lon + kLonEvery);
+			vertexData[5].position.w = 1.0f;
+			vertexData[5].texcoord = {
+				float(lonIndex + 1) / float(kSubDivision),
+				1.0f - float(latIndex) / float(kSubDivision)
+			};
+			vertexData[5].normal.x = vertexData[5].position.x;
+			vertexData[5].normal.y = vertexData[5].position.y;
+			vertexData[5].normal.z = vertexData[5].position.z;
+
+			modelData_.vertices.push_back(vertexData[0]);
+			modelData_.vertices.push_back(vertexData[1]);
+			modelData_.vertices.push_back(vertexData[2]);
+			modelData_.vertices.push_back(vertexData[3]);
+			modelData_.vertices.push_back(vertexData[4]);
+			modelData_.vertices.push_back(vertexData[5]);
+		}
+	}
 
 }
 

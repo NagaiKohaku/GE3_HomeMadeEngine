@@ -5,10 +5,6 @@
 #include "dxgidebug.h"
 #include "dxcapi.h"
 
-#include "externals/imgui/imgui.h"
-#include "externals/imgui/imgui_impl_dx12.h"
-#include "externals/imgui/imgui_impl_win32.h"
-
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib,"dxguid.lib")
@@ -66,6 +62,9 @@ public:
 
 	//コマンドリストのゲッター
 	ID3D12GraphicsCommandList* GetCommandList() { return commandList_.Get(); }
+
+	//バックバッファーのゲッター
+	size_t GetBackBufferCount() const { return backBuffers_.size(); }
 
 	//シェーダーファイルのコンパイル
 	Microsoft::WRL::ComPtr<IDxcBlob> CompileShader(
@@ -175,8 +174,8 @@ private:
 	//DSVデスクリプタヒープ
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_;
 
-	//スワップチェーンリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> swapChainResources_[2] = { nullptr };
+	//バックバッファー
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers_;
 
 	//RTVハンドル
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2];
@@ -204,5 +203,4 @@ private:
 
 	//記録時間(FPS固定用)
 	std::chrono::steady_clock::time_point reference_;
-
 };

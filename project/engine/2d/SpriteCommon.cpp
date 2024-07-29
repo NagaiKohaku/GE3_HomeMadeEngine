@@ -3,6 +3,8 @@
 
 #include "Log.h"
 
+#include "cassert"
+
 SpriteCommon* SpriteCommon::GetInstance() {
 	static SpriteCommon instance;
 	return &instance;

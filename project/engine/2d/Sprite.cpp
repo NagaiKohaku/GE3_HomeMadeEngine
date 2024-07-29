@@ -3,6 +3,7 @@
 #include "DirectXCommon.h"
 #include "SpriteCommon.h"
 #include "TextureManager.h"
+#include "externals/imgui/imgui.h"
 
 #include "Pipeline.h"
 

@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "ModelManager.h"
 #include "Camera.h"
+#include "externals/imgui/imgui.h"
 
 #include "Pipeline.h"
 

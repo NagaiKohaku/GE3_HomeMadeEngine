@@ -28,6 +28,22 @@ void ModelManager::LoadModel(const std::string& filePath) {
 	models_.insert(std::make_pair(filePath, std::move(model)));
 }
 
+void ModelManager::CreateSphere(const std::string& filePath) {
+
+	//読み込み済みモデルの検索
+	if (models_.contains(filePath)) {
+		//読み込み済みなら早期return
+		return;
+	}
+
+	//モデルの生成とファイルの読み込み
+	std::unique_ptr<Model> model = std::make_unique<Model>();
+	model->InitializeSphere("resources", filePath);
+
+	//モデルをmapコンテナに格納する
+	models_.insert(std::make_pair(filePath, std::move(model)));
+}
+
 Model* ModelManager::FindModel(const std::string& filePath) {
 
 	//読み込み済みモデルの検索

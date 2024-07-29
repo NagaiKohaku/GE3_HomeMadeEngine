@@ -4,6 +4,8 @@
 
 #include "Log.h"
 
+#include "cassert"
+
 Object3DCommon* Object3DCommon::GetInstance() {
 	static Object3DCommon instance;
 	return &instance;

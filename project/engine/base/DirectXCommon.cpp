@@ -272,14 +272,14 @@ void DirectXCommon::InitializeRenderTargetView() {
 
 	/*スワップチェーンからリソースを引っ張ってくる*/
 
-	//1つ目のResourseを引っ張ってくる
-	hr = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
+	for (int i = 0; i < 2; i++) {
 
-	//Resourceが取得できたかの確認
-	assert(SUCCEEDED(hr));
+		Microsoft::WRL::ComPtr<ID3D12Resource> backBuffer;
 
-	//2つ目のResourseを引っ張ってくる
-	hr = swapChain_->GetBuffer(1, IID_PPV_ARGS(&swapChainResources_[1]));
+		hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&backBuffer));
+
+		backBuffers_.push_back(backBuffer);
+	}
 
 	//Resourceが取得できたかの確認
 	assert(SUCCEEDED(hr));
@@ -297,13 +297,13 @@ void DirectXCommon::InitializeRenderTargetView() {
 	rtvHandles_[0] = rtvStartHandle;
 
 	//1つ目を作る
-	device_->CreateRenderTargetView(swapChainResources_[0].Get(), &rtvDesc, rtvHandles_[0]);
+	device_->CreateRenderTargetView(backBuffers_[0].Get(), &rtvDesc, rtvHandles_[0]);
 
 	//2つ目のディスクリプタハンドルを得る
 	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	//2つ目を作る
-	device_->CreateRenderTargetView(swapChainResources_[1].Get(), &rtvDesc, rtvHandles_[1]);
+	device_->CreateRenderTargetView(backBuffers_[1].Get(), &rtvDesc, rtvHandles_[1]);
 
 }
 
@@ -373,20 +373,6 @@ void DirectXCommon::InitializeDXCCompile() {
 
 void DirectXCommon::InitializeImGui() {
 
-	////ImGuiの初期化
-	//IMGUI_CHECKVERSION();
-	//ImGui::CreateContext();
-	//ImGui::StyleColorsDark();
-	//ImGui_ImplWin32_Init(winApp->GetHwnd());
-	//ImGui_ImplDX12_Init(
-	//	device_.Get(),
-	//	2,
-	//	DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-	//	srvDescriptorHeap_.Get(),
-	//	srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
-	//	srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
-	//);
-
 }
 
 void DirectXCommon::initializeFixFPS() {
@@ -442,7 +428,7 @@ void DirectXCommon::PreDraw() {
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
 	//バリアを張る対象のリソース。現在のバックバッファに対して行う
-	barrier.Transition.pResource = swapChainResources_[backBufferIndex].Get();
+	barrier.Transition.pResource = backBuffers_[backBufferIndex].Get();
 
 	//遷移前(現在)のResourceState 
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
@@ -494,7 +480,7 @@ void DirectXCommon::PostDraw() {
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
 	//バリアを張る対象のリソース。現在のバックバッファに対して行う
-	barrier.Transition.pResource = swapChainResources_[backBufferIndex].Get();
+	barrier.Transition.pResource = backBuffers_[backBufferIndex].Get();
 
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 

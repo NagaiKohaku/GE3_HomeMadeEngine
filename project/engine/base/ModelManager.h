@@ -15,6 +15,8 @@ public:
 
 	void LoadModel(const std::string& filePath);
 
+	void CreateSphere(const std::string& filePath);
+
 	Model* FindModel(const std::string& filePath);
 
 private:

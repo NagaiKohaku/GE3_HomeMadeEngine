@@ -17,6 +17,8 @@ public:
 
 	void Initialize(const std::string& directoryPath, const std::string& filename);
 
+	void InitializeSphere(const std::string& directoryPath, const std::string& filename);
+
 	void Draw();
 
 	void SetColor(const Vector4& color) { materialData_->color = color; }
@@ -70,6 +72,8 @@ private:
 	//バッファリソースの使い道を補足するバッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 
+
+	void CreateSphereModel();
 
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
