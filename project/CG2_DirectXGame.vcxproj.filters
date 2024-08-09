@@ -34,9 +34,6 @@
     <Filter Include="ソース ファイル\engine\3d">
       <UniqueIdentifier>{7ac4abf0-8f79-4833-bdd8-e2df30115196}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\engine\base">
-      <UniqueIdentifier>{eea9fe52-a790-499f-9899-b51ae9664a84}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\engine\others">
       <UniqueIdentifier>{80350cbf-80c7-4e81-b380-dd711bb073f4}</UniqueIdentifier>
     </Filter>
@@ -57,6 +54,9 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\engine\others">
       <UniqueIdentifier>{d61cc937-1394-4b1e-a140-2f5473d95798}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\engine\base">
+      <UniqueIdentifier>{eea9fe52-a790-499f-9899-b51ae9664a84}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -141,10 +141,19 @@
     <ClCompile Include="engine\base\ParticleManager.cpp">
       <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleEmitter.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="engine\base\ImGuiManager.cpp">
+      <Filter>ソース ファイル\engine\base</Filter>
     </ClCompile>
-    <ClCompile Include="ImGuiManager.cpp">
+    <ClCompile Include="engine\base\ParticleEmitter.cpp">
+      <Filter>ソース ファイル\engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Matrix.cpp">
+      <Filter>ソース ファイル\engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Vector.cpp">
+      <Filter>ソース ファイル\engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\Audio.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -230,10 +239,13 @@
     <ClInclude Include="engine\base\ParticleManager.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleEmitter.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="engine\base\ParticleEmitter.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="ImGuiManager.h">
+    <ClInclude Include="engine\base\ImGuiManager.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\Audio.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

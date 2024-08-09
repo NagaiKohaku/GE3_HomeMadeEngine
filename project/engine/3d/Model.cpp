@@ -40,7 +40,7 @@ void Model::Initialize(const std::string& directoryPath, const std::string& file
 
 	//マテリアルデータの設定
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = false;
+	materialData_->enableLighting = true;
 	materialData_->uvTransform = Pipeline::MakeIdentity4x4();
 
 	//モデルデータのテクスチャ設定

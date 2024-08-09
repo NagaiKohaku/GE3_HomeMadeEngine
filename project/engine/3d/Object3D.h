@@ -19,7 +19,7 @@ class Object3D {
 
 public:
 
-	void Initialize();
+	void Initialize(const std::string& filePath);
 
 	void Update();
 

@@ -8,12 +8,15 @@
 #include "externals/imgui/imgui.h"
 
 #include "Pipeline.h"
+#include "Vector3Math.h"
 
 #include "cassert"
 
-void Object3D::Initialize() {
+void Object3D::Initialize(const std::string& filePath) {
 
 	object3DCommon_ = Object3DCommon::GetInstance();
+
+	model_ = ModelManager::GetInstance()->FindModel(filePath);
 
 	//座標変換行列リソースを作成
 	WVPResource_ = object3DCommon_->GetDxCommon()->CreateBufferResource(sizeof(TransformationMatrix));
@@ -56,6 +59,8 @@ void Object3D::Update() {
 
 	WVPData_->WVP = worldViewProjectionMatrix;
 	WVPData_->World = worldMatrix;
+
+	directionalLightData_->direction = Vector3Math::Normalize(directionalLightData_->direction);
 }
 
 void Object3D::Draw() {
@@ -77,7 +82,16 @@ void Object3D::DisplayImGui() {
 	ImGui::DragFloat3("Translate", &transform_.translate.x, 0.1f);
 	ImGui::DragFloat3("Rotate", &transform_.rotate.x, 0.1f);
 	ImGui::DragFloat3("Scale", &transform_.scale.x, 0.1f);
-	ImGui::ColorEdit4("Color", &color.x);
+	ImGui::ColorEdit3("Color", &color.x);
+
+	if (ImGui::TreeNode("Light")) {
+
+		ImGui::DragFloat3("Direction", &directionalLightData_->direction.x, 0.01f);
+		ImGui::DragFloat("Intensity", &directionalLightData_->intensity, 0.01f,0.0f,1.0f);
+		ImGui::ColorEdit3("Color", &directionalLightData_->color.x);
+
+		ImGui::TreePop();
+	}
 
 	model_->SetColor(color);
 }

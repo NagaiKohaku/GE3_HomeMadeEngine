@@ -7,6 +7,8 @@ class DirectXCommon;
 
 class Camera;
 
+class DebugCamera;
+
 class Object3DCommon {
 
 public:
@@ -20,6 +22,8 @@ public:
 
 	void SetDefaultCamera(Camera* camera) { defaultCamera_ = camera; }
 
+	void SetDefaultCamera(DebugCamera* debugCamera) { debugCamera_ = debugCamera; }
+
 	Camera* GetDefaultCamera() const { return defaultCamera_; }
 
 private:
@@ -31,6 +35,8 @@ private:
 	DirectXCommon* dxCommon_ = nullptr;
 
 	Camera* defaultCamera_ = nullptr;
+
+	DebugCamera* debugCamera_ = nullptr;
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 

@@ -11,7 +11,7 @@ void Sprite::Initialize(const std::string& filePath) {
 
 	spriteCommon_ = SpriteCommon::GetInstance();
 
-	texturePath_ = filePath;
+	texturePath_ = "resources/" + filePath;
 
 	//頂点リソースを作成
 	vertexResource_ = spriteCommon_->GetDxCommon()->CreateBufferResource(sizeof(VertexData) * 4);

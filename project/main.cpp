@@ -14,6 +14,7 @@
 #include "ParticleManager.h"
 #include "ParticleEmitter.h"
 #include "ImGuiManager.h"
+#include "Audio.h"
 
 #include "Vector.h"
 #include "Log.h"
@@ -73,6 +74,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Inputの初期化
 	input->Initialize();
 
+	//Audioの静的インスタンスを取得
+	Audio* audio = Audio::GetInstance();
+	//audioの初期化
+	audio->Initialize();
+
 	//ImGuiManagerの静的インスタンスを取得
 	ImGuiManager* imGuiManager = ImGuiManager::GetInstance();
 	//ImGuiManagerの初期化
@@ -93,43 +99,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//カメラ
 	std::unique_ptr<Camera> camera;
 
-	//エミッター
-	std::unique_ptr<ParticleEmitter> emitter;
-
 	//3Dオブジェクト
-	std::unique_ptr<Object3D> object1;
-
-	//モデル
-	std::unique_ptr<Model> model;
+	std::unique_ptr<Object3D> ball;
 
 	//カメラを生成
 	camera = std::make_unique<Camera>();
 
 	//カメラの設定
-	camera->SetRotate({ 0.3f,0.0f,0.0f });
-	camera->SetTranslate({ 0.0f,4.0f,-10.0f });
+	camera->SetTranslate({ 0.0f,0.0f,0.0f });
+
+	camera->SetRotate({ 0.0f,static_cast<float>(std::numbers::pi) / 180.0f * 180.0f,0.0f });
 
 	//3Dオブジェクトのカメラ情報を設定
 	object3DCommon->SetDefaultCamera(camera.get());
 
-	//パーティクルのカメラ情報を設定
-	particleManager->SetDefaultCamera(camera.get());
-
-	//エミッターの生成
-	emitter = std::make_unique<ParticleEmitter>();
-
-	//3Dオブジェクトの生成
-	object1 = std::make_unique<Object3D>();
-
-	//3Dオブジェクトの初期化
-	object1->Initialize();
-
 	//モデルのロード
 	ModelManager::GetInstance()->CreateSphere("monsterBall.png");
 
-	//3Dオブジェクトにモデルを設定する
-	object1->SetModel("monsterBall.png");
+	//3Dオブジェクトの生成
+	ball = std::make_unique<Object3D>();
 
+	//3Dオブジェクトの初期化
+	ball->Initialize("monsterBall.png");
+
+	//3Dオブジェクトの設定
+	ball->SetTranslate({ 0.0f,0.0f,0.0f });
+
+	ball->SetRotate({ 0.0f,static_cast<float>(std::numbers::pi) / 180.0f * 90.0f,0.0f });
+
+	//音声データの読み込み
+	SoundData soundData = audio->SoundLoadWave("resources/se.wav");
 
 	///            ///
 	/// ゲームループ ///
@@ -152,37 +151,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//imguiの更新前処理
 		imGuiManager->Begin();
 
-		//パーティクルの更新
-		particleManager->Update();
-
-		//エミッターの更新
-		emitter->Update();
-
 		//Inputクラスの更新
 		input->Update();
 
 		//カメラの更新
-		camera->Update();
+		camera->DebugUpdate();
 
 		//3Dオブジェクトの更新
-		object1->Update();
+		ball->Update();
 
 		//ImGuiを起動
 		ImGui::Begin("Debug");
 
+		ImGui::Text("LShift + Left Click : Camera Translate");
+		ImGui::Text("LShift + Right Click : Camera Rotate");
+		ImGui::Text("LShift + MiddleButton Scroll : Camera Distance");
+
+		//カメラのImGui
 		if (ImGui::TreeNode("Camera")) {
 
 			camera->DisplayImGui();
 
 			ImGui::TreePop();
+
 		}
 
 		//モデルのImGui
-		if (ImGui::TreeNode("Object1")) {
+		if (ImGui::TreeNode("Ball")) {
 
-			object1->DisplayImGui();
+			ball->DisplayImGui();
 
 			ImGui::TreePop();
+		}
+
+		if (ImGui::Button("Start Audio")) {
+
+			//音声データの再生
+			audio->SoundPlayWave(soundData);
 		}
 
 		//ImGuiの終了
@@ -200,20 +205,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//描画前処理
 		directXCommon->PreDraw();
 
-		//Spriteの描画準備
-		spriteCommon->CommonDrawSetting();
-
 		//SRVの設定
 		srvManager->PreDraw();
+
+		//Spriteの描画準備
+		spriteCommon->CommonDrawSetting();
 
 		//3DObjectの描画準備
 		object3DCommon->CommonDrawSetting();
 
 		//Object3Dの描画
-		object1->Draw();
-
-		//パーティクルの描画
-		particleManager->Draw();
+		ball->Draw();
 
 		//imguiの描画処理
 		imGuiManager->Draw();
@@ -228,6 +230,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	/// 終了処理 ///
 	///        ///
 
+	//xAudioの解放
+	audio->Finalize();
+
+	//音声データの解放
+	audio->SoundUnLoad(&soundData);
 
 	//ImGuiManagerの終了処理
 	imGuiManager->Finalize();

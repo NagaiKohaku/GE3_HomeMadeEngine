@@ -121,6 +121,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="engine\base\Audio.cpp" />
     <ClCompile Include="engine\base\Camera.cpp" />
     <ClCompile Include="engine\base\DirectXCommon.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
@@ -131,7 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="engine\base\Input.cpp" />
-    <ClCompile Include="ImGuiManager.cpp" />
+    <ClCompile Include="engine\base\ImGuiManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\math\Pipeline.cpp" />
     <ClCompile Include="engine\math\Vector3Math.cpp" />
@@ -147,9 +148,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\base\WinApp.cpp" />
     <ClCompile Include="engine\base\SrvManager.cpp" />
     <ClCompile Include="engine\base\ParticleManager.cpp" />
-    <ClCompile Include="ParticleEmitter.cpp" />
+    <ClCompile Include="engine\math\Matrix.cpp" />
+    <ClCompile Include="engine\base\ParticleEmitter.cpp" />
+    <ClCompile Include="engine\math\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\base\Audio.h" />
     <ClInclude Include="engine\base\Camera.h" />
     <ClInclude Include="engine\base\DirectXCommon.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
@@ -177,8 +181,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\WinApp.h" />
     <ClInclude Include="engine\base\SrvManager.h" />
     <ClInclude Include="engine\base\ParticleManager.h" />
-    <ClInclude Include="ImGuiManager.h" />
-    <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="engine\base\ImGuiManager.h" />
+    <ClInclude Include="engine\base\ParticleEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

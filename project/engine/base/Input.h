@@ -6,6 +6,10 @@
 #pragma comment(lib,"dinput8.lib")
 #pragma comment(lib,"dxguid.lib")
 
+#include "Vector.h"
+
+#include "cstdint"
+
 #include "wrl.h"
 
 class WinApp;
@@ -22,7 +26,25 @@ public:
 
 	void Update();
 
-	bool PushKey(BYTE keyNumber);
+	bool isPushKey(uint8_t keyNum);
+
+	bool isReleaseKey(uint8_t keyNum);
+
+	bool IsTriggerPushKey(uint8_t keyNum);
+
+	bool IsTriggerReleaseKey(uint8_t keyNum);
+
+	bool IsPushMouseButton(int mouseButton);
+
+	bool IsReleaseMouseButton(int mouseButton);
+
+	bool IsTriggerPushMouseButton(int mouseButton);
+
+	bool IsTriggerReleaseMouseButton(int mouseButton);
+
+	Vector2 GetMousePos();
+
+	Vector3 GetMouseVelocity();
 
 private:
 
@@ -32,6 +54,15 @@ private:
 
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard_;
 
-	BYTE key[256] = {};
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouse_;
 
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> gamePad_;
+
+	BYTE key_[256] = {};
+
+	BYTE preKey_[256] = {};
+
+	DIMOUSESTATE mouseState_;
+
+	DIMOUSESTATE preMouseState_;
 };

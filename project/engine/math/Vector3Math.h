@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector.h"
+#include "Matrix.h"
 
 struct Line {
 	Vector3 origin; //始点
@@ -50,4 +51,6 @@ public:
 	//最近接点の生成
 	static Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
 
+	//ベクトル変換
+	static Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 };
