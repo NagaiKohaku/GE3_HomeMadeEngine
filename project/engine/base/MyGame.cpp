@@ -1,4 +1,4 @@
-#include "GameScene.h"
+#include "MyGame.h"
 
 #include "Vector.h"
 #include "Log.h"
@@ -7,7 +7,7 @@
 
 #include "numbers"
 
-void GameScene::Initialize() {
+void MyGame::Initialize() {
 
 	//基底クラスの初期化
 	FrameWork::Initialize();
@@ -41,7 +41,7 @@ void GameScene::Initialize() {
 	soundData_ = audio_->SoundLoadWave("resources/se.wav");
 }
 
-void GameScene::Finalize() {
+void MyGame::Finalize() {
 
 	//基底クラスの終了処理
 	FrameWork::Finalize();
@@ -50,7 +50,7 @@ void GameScene::Finalize() {
 	audio_->SoundUnLoad(&soundData_);
 }
 
-void GameScene::Update() {
+void MyGame::Update() {
 
 	//基底クラスの更新処理
 	FrameWork::Update();
@@ -101,7 +101,7 @@ void GameScene::Update() {
 	imGuiManager_->End();
 }
 
-void GameScene::Draw() {
+void MyGame::Draw() {
 
 	//描画前処理
 	directXCommon_->PreDraw();

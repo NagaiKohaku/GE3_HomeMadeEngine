@@ -12,7 +12,7 @@
 
 #include "memory"
 
-class GameScene : public FrameWork {
+class MyGame : public FrameWork {
 
 public:
 

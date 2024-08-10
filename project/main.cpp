@@ -1,17 +1,17 @@
 #include "FrameWork.h"
-#include "GameScene.h"
+#include "MyGame.h"
 
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	//シーンを生成
-	FrameWork* gameScene = new GameScene();
+	FrameWork* myGame = new MyGame();
 
 	//シーンを実行
-	gameScene->Run();
+	myGame->Run();
 
 	//シーンの解放
-	delete gameScene;
+	delete myGame;
 
 	return 0;
 }
