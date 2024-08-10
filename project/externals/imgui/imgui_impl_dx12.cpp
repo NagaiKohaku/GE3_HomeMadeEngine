@@ -572,12 +572,12 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
               float2 uv  : TEXCOORD0;\
             };\
             \
-            PS_INPUT main(VS_INPUT input)\
+            PS_INPUT main(VS_INPUT input_)\
             {\
               PS_INPUT output;\
-              output.pos = mul( ProjectionMatrix, float4(input.pos.xy, 0.f, 1.f));\
-              output.col = input.col;\
-              output.uv  = input.uv;\
+              output.pos = mul( ProjectionMatrix, float4(input_.pos.xy, 0.f, 1.f));\
+              output.col = input_.col;\
+              output.uv  = input_.uv;\
               return output;\
             }";
 
@@ -585,7 +585,7 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
             return false; // NB: Pass ID3DBlob* pErrorBlob to D3DCompile() to get error showing in (const char*)pErrorBlob->GetBufferPointer(). Make sure to Release() the blob!
         psoDesc.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };
 
-        // Create the input layout
+        // Create the input_ layout
         static D3D12_INPUT_ELEMENT_DESC local_layout[] =
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32_FLOAT,   0, (UINT)IM_OFFSETOF(ImDrawVert, pos), D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -607,9 +607,9 @@ bool    ImGui_ImplDX12_CreateDeviceObjects()
             SamplerState sampler0 : register(s0);\
             Texture2D texture0 : register(t0);\
             \
-            float4 main(PS_INPUT input) : SV_Target\
+            float4 main(PS_INPUT input_) : SV_Target\
             {\
-              float4 out_col = input.col * texture0.Sample(sampler0, input.uv); \
+              float4 out_col = input_.col * texture0.Sample(sampler0, input_.uv); \
               return out_col; \
             }";
 

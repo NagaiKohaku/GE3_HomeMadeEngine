@@ -58,6 +58,12 @@
     <Filter Include="ソース ファイル\engine\base">
       <UniqueIdentifier>{eea9fe52-a790-499f-9899-b51ae9664a84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scene">
+      <UniqueIdentifier>{1a49ba5c-faca-4ed9-8f56-b8872b3382b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scene">
+      <UniqueIdentifier>{061745f1-0960-4feb-b500-d5a682bc2665}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
@@ -154,7 +160,13 @@
       <Filter>ソース ファイル\engine\math</Filter>
     </ClCompile>
     <ClCompile Include="engine\base\Audio.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\engine\base</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\FrameWork.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\GameScene.cpp">
+      <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,8 +257,14 @@
     <ClInclude Include="engine\base\ImGuiManager.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
+    <ClInclude Include="scene\FrameWork.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\GameScene.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
     <ClInclude Include="engine\base\Audio.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

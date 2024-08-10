@@ -447,7 +447,7 @@ void ImGui::ShowDemoWindow(bool* p_open)
             ImGui::CheckboxFlags("io.ConfigFlags: NoMouseCursorChange", &io.ConfigFlags, ImGuiConfigFlags_NoMouseCursorChange);
             ImGui::SameLine(); HelpMarker("Instruct backend to not alter mouse cursor shape and visibility.");
             ImGui::Checkbox("io.ConfigInputTrickleEventQueue", &io.ConfigInputTrickleEventQueue);
-            ImGui::SameLine(); HelpMarker("Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.");
+            ImGui::SameLine(); HelpMarker("Enable input_ queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.");
             ImGui::Checkbox("io.MouseDrawCursor", &io.MouseDrawCursor);
             ImGui::SameLine(); HelpMarker("Instruct Dear ImGui to render a mouse cursor itself. Note that a mouse cursor rendered via your application GPU rendering path will feel more laggy than hardware cursor, but will be more in sync with your other visuals.\n\nSome desktop applications may use both kinds of cursors (e.g. enable software cursor only when resizing/dragging something).");
 
@@ -457,7 +457,7 @@ void ImGui::ShowDemoWindow(bool* p_open)
             ImGui::Checkbox("io.ConfigInputTextEnterKeepActive", &io.ConfigInputTextEnterKeepActive);
             ImGui::SameLine(); HelpMarker("Pressing Enter will keep item active and select contents (single-line only).");
             ImGui::Checkbox("io.ConfigDragClickToInputText", &io.ConfigDragClickToInputText);
-            ImGui::SameLine(); HelpMarker("Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving).");
+            ImGui::SameLine(); HelpMarker("Enable turning DragXXX widgets into text input_ with a simple mouse click-release (without moving).");
             ImGui::Checkbox("io.ConfigWindowsResizeFromEdges", &io.ConfigWindowsResizeFromEdges);
             ImGui::SameLine(); HelpMarker("Enable resizing of windows from their edges and from the lower-left corner.\nThis requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback.");
             ImGui::Checkbox("io.ConfigWindowsMoveFromTitleBarOnly", &io.ConfigWindowsMoveFromTitleBarOnly);
@@ -665,7 +665,7 @@ static void ShowDemoWindowWidgets()
             // see the "Text Input > Resize Callback" section of this demo, and the misc/cpp/imgui_stdlib.h file.
             IMGUI_DEMO_MARKER("Widgets/Basic/InputText");
             static char str0[128] = "Hello, world!";
-            ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
+            ImGui::InputText("input_ text", str0, IM_ARRAYSIZE(str0));
             ImGui::SameLine(); HelpMarker(
                 "USER:\n"
                 "Hold SHIFT or use mouse to select text.\n"
@@ -680,26 +680,26 @@ static void ShowDemoWindowWidgets()
                 "in imgui_demo.cpp).");
 
             static char str1[128] = "";
-            ImGui::InputTextWithHint("input text (w/ hint)", "enter text here", str1, IM_ARRAYSIZE(str1));
+            ImGui::InputTextWithHint("input_ text (w/ hint)", "enter text here", str1, IM_ARRAYSIZE(str1));
 
             IMGUI_DEMO_MARKER("Widgets/Basic/InputInt, InputFloat");
             static int i0 = 123;
-            ImGui::InputInt("input int", &i0);
+            ImGui::InputInt("input_ int", &i0);
 
             static float f0 = 0.001f;
-            ImGui::InputFloat("input float", &f0, 0.01f, 1.0f, "%.3f");
+            ImGui::InputFloat("input_ float", &f0, 0.01f, 1.0f, "%.3f");
 
             static double d0 = 999999.00000001;
-            ImGui::InputDouble("input double", &d0, 0.01f, 1.0f, "%.8f");
+            ImGui::InputDouble("input_ double", &d0, 0.01f, 1.0f, "%.8f");
 
             static float f1 = 1.e10f;
-            ImGui::InputFloat("input scientific", &f1, 0.0f, 0.0f, "%e");
+            ImGui::InputFloat("input_ scientific", &f1, 0.0f, 0.0f, "%e");
             ImGui::SameLine(); HelpMarker(
-                "You can input value using the scientific notation,\n"
+                "You can input_ value using the scientific notation,\n"
                 "  e.g. \"1e+8\" becomes \"100000000\".");
 
             static float vec4a[4] = { 0.10f, 0.20f, 0.30f, 0.44f };
-            ImGui::InputFloat3("input float3", vec4a);
+            ImGui::InputFloat3("input_ float3", vec4a);
         }
 
         ImGui::SeparatorText("Drags");
@@ -711,7 +711,7 @@ static void ShowDemoWindowWidgets()
             ImGui::SameLine(); HelpMarker(
                 "Click and drag to edit value.\n"
                 "Hold SHIFT/ALT for faster/slower edit.\n"
-                "Double-click or CTRL+click to input value.");
+                "Double-click or CTRL+click to input_ value.");
 
             ImGui::DragInt("drag int 0..100", &i2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp);
 
@@ -726,7 +726,7 @@ static void ShowDemoWindowWidgets()
             IMGUI_DEMO_MARKER("Widgets/Basic/SliderInt, SliderFloat");
             static int i1 = 0;
             ImGui::SliderInt("slider int", &i1, -1, 3);
-            ImGui::SameLine(); HelpMarker("CTRL+click to input value.");
+            ImGui::SameLine(); HelpMarker("CTRL+click to input_ value.");
 
             static float f1 = 0.123f, f2 = 0.0f;
             ImGui::SliderFloat("slider float", &f1, 0.0f, 1.0f, "ratio = %.3f");
@@ -759,7 +759,7 @@ static void ShowDemoWindowWidgets()
                 "Click on the color square to open a color picker.\n"
                 "Click and hold to use drag and drop.\n"
                 "Right-click on the color square to show options.\n"
-                "CTRL+click on individual component to input value.\n");
+                "CTRL+click on individual component to input_ value.\n");
 
             ImGui::ColorEdit4("color 2", col2);
         }
@@ -1011,7 +1011,7 @@ static void ShowDemoWindowWidgets()
             ImGui::Text("Kanjis: \xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e (nihongo)");
             static char buf[32] = "\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e";
             //static char buf[32] = u8"NIHONGO"; // <- this is how you would write it with C++11, using real kanjis
-            ImGui::InputText("UTF-8 input", buf, IM_ARRAYSIZE(buf));
+            ImGui::InputText("UTF-8 input_", buf, IM_ARRAYSIZE(buf));
             ImGui::TreePop();
         }
         ImGui::TreePop();
@@ -1408,7 +1408,7 @@ static void ShowDemoWindowWidgets()
             ImGui::TreePop();
         }
 
-        IMGUI_DEMO_MARKER("Widgets/Text Input/Password input");
+        IMGUI_DEMO_MARKER("Widgets/Text Input/Password input_");
         if (ImGui::TreeNode("Password Input"))
         {
             static char password[64] = "password123";
@@ -1773,7 +1773,7 @@ static void ShowDemoWindowWidgets()
         ImGui::Text("Color widget:");
         ImGui::SameLine(); HelpMarker(
             "Click on the color square to open a color picker.\n"
-            "CTRL+click on individual component to input value.\n");
+            "CTRL+click on individual component to input_ value.\n");
         ImGui::ColorEdit3("MyColor##1", (float*)&color, misc_flags);
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit (HSV, with Alpha)");
@@ -1948,13 +1948,13 @@ static void ShowDemoWindowWidgets()
         // Demonstrate using advanced flags for DragXXX and SliderXXX functions. Note that the flags are the same!
         static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
         ImGui::CheckboxFlags("ImGuiSliderFlags_AlwaysClamp", &flags, ImGuiSliderFlags_AlwaysClamp);
-        ImGui::SameLine(); HelpMarker("Always clamp value to min/max bounds (if any) when input manually with CTRL+Click.");
+        ImGui::SameLine(); HelpMarker("Always clamp value to min/max bounds (if any) when input_ manually with CTRL+Click.");
         ImGui::CheckboxFlags("ImGuiSliderFlags_Logarithmic", &flags, ImGuiSliderFlags_Logarithmic);
         ImGui::SameLine(); HelpMarker("Enable logarithmic editing (more precision for small values).");
         ImGui::CheckboxFlags("ImGuiSliderFlags_NoRoundToFormat", &flags, ImGuiSliderFlags_NoRoundToFormat);
         ImGui::SameLine(); HelpMarker("Disable rounding underlying value to match precision of the format string (e.g. %.3f values are rounded to those 3 digits).");
         ImGui::CheckboxFlags("ImGuiSliderFlags_NoInput", &flags, ImGuiSliderFlags_NoInput);
-        ImGui::SameLine(); HelpMarker("Disable CTRL+Click or Enter key allowing to input text directly into the widget.");
+        ImGui::SameLine(); HelpMarker("Disable CTRL+Click or Enter key allowing to input_ text directly into the widget.");
 
         // Drags
         static float drag_f = 0.5f;
@@ -2042,7 +2042,7 @@ static void ShowDemoWindowWidgets()
         ImGui::Checkbox("Clamp integers to 0..50", &drag_clamp);
         ImGui::SameLine(); HelpMarker(
             "As with every widget in dear imgui, we never modify values unless there is a user interaction.\n"
-            "You can override the clamping limits by using CTRL+Click to input a value.");
+            "You can override the clamping limits by using CTRL+Click to input_ a value.");
         ImGui::DragScalar("drag s8",        ImGuiDataType_S8,     &s8_v,  drag_speed, drag_clamp ? &s8_zero  : NULL, drag_clamp ? &s8_fifty  : NULL);
         ImGui::DragScalar("drag u8",        ImGuiDataType_U8,     &u8_v,  drag_speed, drag_clamp ? &u8_zero  : NULL, drag_clamp ? &u8_fifty  : NULL, "%u ms");
         ImGui::DragScalar("drag s16",       ImGuiDataType_S16,    &s16_v, drag_speed, drag_clamp ? &s16_zero : NULL, drag_clamp ? &s16_fifty : NULL);
@@ -2095,18 +2095,18 @@ static void ShowDemoWindowWidgets()
         static bool inputs_step = true;
         ImGui::SeparatorText("Inputs");
         ImGui::Checkbox("Show step buttons", &inputs_step);
-        ImGui::InputScalar("input s8",      ImGuiDataType_S8,     &s8_v,  inputs_step ? &s8_one  : NULL, NULL, "%d");
-        ImGui::InputScalar("input u8",      ImGuiDataType_U8,     &u8_v,  inputs_step ? &u8_one  : NULL, NULL, "%u");
-        ImGui::InputScalar("input s16",     ImGuiDataType_S16,    &s16_v, inputs_step ? &s16_one : NULL, NULL, "%d");
-        ImGui::InputScalar("input u16",     ImGuiDataType_U16,    &u16_v, inputs_step ? &u16_one : NULL, NULL, "%u");
-        ImGui::InputScalar("input s32",     ImGuiDataType_S32,    &s32_v, inputs_step ? &s32_one : NULL, NULL, "%d");
-        ImGui::InputScalar("input s32 hex", ImGuiDataType_S32,    &s32_v, inputs_step ? &s32_one : NULL, NULL, "%04X");
-        ImGui::InputScalar("input u32",     ImGuiDataType_U32,    &u32_v, inputs_step ? &u32_one : NULL, NULL, "%u");
-        ImGui::InputScalar("input u32 hex", ImGuiDataType_U32,    &u32_v, inputs_step ? &u32_one : NULL, NULL, "%08X");
-        ImGui::InputScalar("input s64",     ImGuiDataType_S64,    &s64_v, inputs_step ? &s64_one : NULL);
-        ImGui::InputScalar("input u64",     ImGuiDataType_U64,    &u64_v, inputs_step ? &u64_one : NULL);
-        ImGui::InputScalar("input float",   ImGuiDataType_Float,  &f32_v, inputs_step ? &f32_one : NULL);
-        ImGui::InputScalar("input double",  ImGuiDataType_Double, &f64_v, inputs_step ? &f64_one : NULL);
+        ImGui::InputScalar("input_ s8",      ImGuiDataType_S8,     &s8_v,  inputs_step ? &s8_one  : NULL, NULL, "%d");
+        ImGui::InputScalar("input_ u8",      ImGuiDataType_U8,     &u8_v,  inputs_step ? &u8_one  : NULL, NULL, "%u");
+        ImGui::InputScalar("input_ s16",     ImGuiDataType_S16,    &s16_v, inputs_step ? &s16_one : NULL, NULL, "%d");
+        ImGui::InputScalar("input_ u16",     ImGuiDataType_U16,    &u16_v, inputs_step ? &u16_one : NULL, NULL, "%u");
+        ImGui::InputScalar("input_ s32",     ImGuiDataType_S32,    &s32_v, inputs_step ? &s32_one : NULL, NULL, "%d");
+        ImGui::InputScalar("input_ s32 hex", ImGuiDataType_S32,    &s32_v, inputs_step ? &s32_one : NULL, NULL, "%04X");
+        ImGui::InputScalar("input_ u32",     ImGuiDataType_U32,    &u32_v, inputs_step ? &u32_one : NULL, NULL, "%u");
+        ImGui::InputScalar("input_ u32 hex", ImGuiDataType_U32,    &u32_v, inputs_step ? &u32_one : NULL, NULL, "%08X");
+        ImGui::InputScalar("input_ s64",     ImGuiDataType_S64,    &s64_v, inputs_step ? &s64_one : NULL);
+        ImGui::InputScalar("input_ u64",     ImGuiDataType_U64,    &u64_v, inputs_step ? &u64_one : NULL);
+        ImGui::InputScalar("input_ float",   ImGuiDataType_Float,  &f32_v, inputs_step ? &f32_one : NULL);
+        ImGui::InputScalar("input_ double",  ImGuiDataType_Double, &f64_v, inputs_step ? &f64_one : NULL);
 
         ImGui::TreePop();
     }
@@ -2118,26 +2118,26 @@ static void ShowDemoWindowWidgets()
         static int vec4i[4] = { 1, 5, 100, 255 };
 
         ImGui::SeparatorText("2-wide");
-        ImGui::InputFloat2("input float2", vec4f);
+        ImGui::InputFloat2("input_ float2", vec4f);
         ImGui::DragFloat2("drag float2", vec4f, 0.01f, 0.0f, 1.0f);
         ImGui::SliderFloat2("slider float2", vec4f, 0.0f, 1.0f);
-        ImGui::InputInt2("input int2", vec4i);
+        ImGui::InputInt2("input_ int2", vec4i);
         ImGui::DragInt2("drag int2", vec4i, 1, 0, 255);
         ImGui::SliderInt2("slider int2", vec4i, 0, 255);
 
         ImGui::SeparatorText("3-wide");
-        ImGui::InputFloat3("input float3", vec4f);
+        ImGui::InputFloat3("input_ float3", vec4f);
         ImGui::DragFloat3("drag float3", vec4f, 0.01f, 0.0f, 1.0f);
         ImGui::SliderFloat3("slider float3", vec4f, 0.0f, 1.0f);
-        ImGui::InputInt3("input int3", vec4i);
+        ImGui::InputInt3("input_ int3", vec4i);
         ImGui::DragInt3("drag int3", vec4i, 1, 0, 255);
         ImGui::SliderInt3("slider int3", vec4i, 0, 255);
 
         ImGui::SeparatorText("4-wide");
-        ImGui::InputFloat4("input float4", vec4f);
+        ImGui::InputFloat4("input_ float4", vec4f);
         ImGui::DragFloat4("drag float4", vec4f, 0.01f, 0.0f, 1.0f);
         ImGui::SliderFloat4("slider float4", vec4f, 0.0f, 1.0f);
-        ImGui::InputInt4("input int4", vec4i);
+        ImGui::InputInt4("input_ int4", vec4i);
         ImGui::DragInt4("drag int4", vec4i, 1, 0, 255);
         ImGui::SliderInt4("slider int4", vec4i, 0, 255);
 
@@ -2353,9 +2353,9 @@ static void ShowDemoWindowWidgets()
         if (item_type == 2) { ImGui::PushButtonRepeat(true); ret = ImGui::Button("ITEM: Button"); ImGui::PopButtonRepeat(); } // Testing button (with repeater)
         if (item_type == 3) { ret = ImGui::Checkbox("ITEM: Checkbox", &b); }                            // Testing checkbox
         if (item_type == 4) { ret = ImGui::SliderFloat("ITEM: SliderFloat", &col4f[0], 0.0f, 1.0f); }   // Testing basic item
-        if (item_type == 5) { ret = ImGui::InputText("ITEM: InputText", &str[0], IM_ARRAYSIZE(str)); }  // Testing input text (which handles tabbing)
-        if (item_type == 6) { ret = ImGui::InputTextMultiline("ITEM: InputTextMultiline", &str[0], IM_ARRAYSIZE(str)); } // Testing input text (which uses a child window)
-        if (item_type == 7) { ret = ImGui::InputFloat("ITEM: InputFloat", col4f, 1.0f); }               // Testing +/- buttons on scalar input
+        if (item_type == 5) { ret = ImGui::InputText("ITEM: InputText", &str[0], IM_ARRAYSIZE(str)); }  // Testing input_ text (which handles tabbing)
+        if (item_type == 6) { ret = ImGui::InputTextMultiline("ITEM: InputTextMultiline", &str[0], IM_ARRAYSIZE(str)); } // Testing input_ text (which uses a child window)
+        if (item_type == 7) { ret = ImGui::InputFloat("ITEM: InputFloat", col4f, 1.0f); }               // Testing +/- buttons on scalar input_
         if (item_type == 8) { ret = ImGui::InputFloat3("ITEM: InputFloat3", col4f); }                   // Testing multi-component items (IsItemXXX flags are reported merged)
         if (item_type == 9) { ret = ImGui::ColorEdit4("ITEM: ColorEdit4", col4f); }                     // Testing multi-component items (IsItemXXX flags are reported merged)
         if (item_type == 10){ ret = ImGui::Selectable("ITEM: Selectable"); }                            // Testing selectable item
@@ -3588,7 +3588,7 @@ static void ShowDemoWindowPopups()
                 ImGui::OpenPopup("Stacked 2");
 
             // Also demonstrate passing a bool* to BeginPopupModal(), this will create a regular close button which
-            // will close the popup. Note that the visibility state of popups is owned by imgui, so the input value
+            // will close the popup. Note that the visibility state of popups is owned by imgui, so the input_ value
             // of the bool actually doesn't matter here.
             bool unused_open = true;
             if (ImGui::BeginPopupModal("Stacked 2", &unused_open))
@@ -5728,7 +5728,7 @@ static void ShowDemoWindowInputs()
         if (ImGui::TreeNode("Inputs"))
         {
             HelpMarker(
-                "This is a simplified view. See more detailed input state:\n"
+                "This is a simplified view. See more detailed input_ state:\n"
                 "- in 'Tools->Metrics/Debugger->Inputs'.\n"
                 "- in 'Tools->Debug OutPutLog->IO'.");
             if (ImGui::IsMousePosValid())
@@ -6388,7 +6388,7 @@ void ImGui::ShowUserGuide()
     ImGui::BulletText(
         "Click and drag on lower corner to resize window\n"
         "(double-click to auto fit window to its contents).");
-    ImGui::BulletText("CTRL+Click on a slider or drag box to input value as text.");
+    ImGui::BulletText("CTRL+Click on a slider or drag box to input_ value as text.");
     ImGui::BulletText("TAB/SHIFT+TAB to cycle through keyboard editable fields.");
     ImGui::BulletText("CTRL+Tab to select a window.");
     if (io.FontAllowUserScaling)
@@ -6405,7 +6405,7 @@ void ImGui::ShowUserGuide()
     ImGui::Indent();
     ImGui::BulletText("Arrow keys to navigate.");
     ImGui::BulletText("Space to activate a widget.");
-    ImGui::BulletText("Return to input text into a widget.");
+    ImGui::BulletText("Return to input_ text into a widget.");
     ImGui::BulletText("Escape to deactivate a widget, close popup, exit child window.");
     ImGui::BulletText("Alt to jump to the menu layer of a window.");
     ImGui::Unindent();
@@ -6644,7 +6644,7 @@ struct ExampleAppConsole
         Filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
         ImGui::Separator();
 
-        // Reserve enough left-over height for 1 separator + 1 input text
+        // Reserve enough left-over height for 1 separator + 1 input_ text
         const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
         if (ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar))
         {
@@ -6772,7 +6772,7 @@ struct ExampleAppConsole
             AddLog("Unknown command: '%s'\n", command_line);
         }
 
-        // On command input, we scroll to bottom even if AutoScroll==false
+        // On command input_, we scroll to bottom even if AutoScroll==false
         ScrollToBottom = true;
     }
 
@@ -6872,7 +6872,7 @@ struct ExampleAppConsole
                             HistoryPos = -1;
                 }
 
-                // A better implementation would preserve the data on the current input line along with cursor position.
+                // A better implementation would preserve the data on the current input_ line along with cursor position.
                 if (prev_history_pos != HistoryPos)
                 {
                     const char* history_str = (HistoryPos >= 0) ? History[HistoryPos] : "";

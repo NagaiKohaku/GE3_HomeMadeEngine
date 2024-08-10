@@ -144,7 +144,7 @@ CODE
      - Tab, SHIFT+Tab:              Cycle through every items.
      - Arrow keys                   Move through items using directional navigation. Tweak value.
      - Arrow keys + Alt, Shift      Tweak slower, tweak faster (when using arrow keys).
-     - Enter                        Activate item (prefer text input when possible).
+     - Enter                        Activate item (prefer text input_ when possible).
      - Space                        Activate item (prefer tweaking with arrows when possible).
      - Escape                       Deactivate item, leave child window, close popup.
      - Page Up, Page Down           Previous page, next page.
@@ -163,10 +163,10 @@ CODE
    - Backend support: backend needs to:
       - Set 'io.BackendFlags |= ImGuiBackendFlags_HasGamepad' + call io.AddKeyEvent/AddKeyAnalogEvent() with ImGuiKey_Gamepad_XXX keys.
       - For analog values (0.0f to 1.0f), backend is responsible to handling a dead-zone and rescaling inputs accordingly.
-        Backend code will probably need to transform your raw inputs (such as e.g. remapping your 0.2..0.9 raw input range to 0.0..1.0 imgui range, etc.).
+        Backend code will probably need to transform your raw inputs (such as e.g. remapping your 0.2..0.9 raw input_ range to 0.0..1.0 imgui range, etc.).
       - BEFORE 1.87, BACKENDS USED TO WRITE TO io.NavInputs[]. This is now obsolete. Please call io functions instead!
    - If you need to share inputs between your game and the Dear ImGui interface, the easiest approach is to go all-or-nothing,
-     with a buttons combo to toggle the target. Please reach out if you think the game vs navigation input sharing could be improved.
+     with a buttons combo to toggle the target. Please reach out if you think the game vs navigation input_ sharing could be improved.
 
  - REMOTE INPUTS SHARING & MOUSE EMULATION
    - PS4/PS5 users: Consider emulating a mouse cursor with DualShock touch pad or a spare analog stick as a mouse-emulation fallback.
@@ -631,7 +631,7 @@ CODE
                        If you have IMGUI_DISABLE_OBSOLETE_FUNCTIONS enabled, the code will instead assert! You may run a reg-exp search on your codebase for e.g. "DragInt.*%f" to help you find them.
  - 2018/04/28 (1.61) - obsoleted InputFloat() functions taking an optional "int decimal_precision" in favor of an equivalent and more flexible "const char* format",
                        consistent with other functions. Kept redirection functions (will obsolete).
- - 2018/04/09 (1.61) - IM_DELETE() helper function added in 1.60 doesn't clear the input _pointer_ reference, more consistent with expectation and allows passing r-value.
+ - 2018/04/09 (1.61) - IM_DELETE() helper function added in 1.60 doesn't clear the input_ _pointer_ reference, more consistent with expectation and allows passing r-value.
  - 2018/03/20 (1.60) - renamed io.WantMoveMouse to io.WantSetMousePos for consistency and ease of understanding (was added in 1.52, _not_ used by core and only honored by some backend ahead of merging the Nav branch).
  - 2018/03/12 (1.60) - removed ImGuiCol_CloseButton, ImGuiCol_CloseButtonActive, ImGuiCol_CloseButtonHovered as the closing cross uses regular button colors now.
  - 2018/03/08 (1.60) - changed ImFont::DisplayOffset.y to default to 0 instead of +1. Fixed rounding of Ascent/Descent to match TrueType renderer. If you were adding or subtracting to ImFont::DisplayOffset check if your fonts are correctly aligned vertically.
@@ -753,7 +753,7 @@ CODE
  - 2015/03/08 (1.35) - renamed style.ScrollBarWidth to style.ScrollbarWidth (casing)
  - 2015/02/27 (1.34) - renamed OpenNextNode(bool) to SetNextTreeNodeOpened(bool, ImGuiSetCond). Kept inline redirection function until 1.50.
  - 2015/02/27 (1.34) - renamed ImGuiSetCondition_*** to ImGuiSetCond_***, and _FirstUseThisSession becomes _Once.
- - 2015/02/11 (1.32) - changed text input callback ImGuiTextEditCallback return type from void-->int. reserved for future use, return 0 for now.
+ - 2015/02/11 (1.32) - changed text input_ callback ImGuiTextEditCallback return type from void-->int. reserved for future use, return 0 for now.
  - 2015/02/10 (1.32) - renamed GetItemWidth() to CalcItemWidth() to clarify its evolving behavior
  - 2015/02/08 (1.31) - renamed GetTextLineSpacing() to GetTextLineHeightWithSpacing()
  - 2015/02/01 (1.31) - removed IO.MemReallocFn (unused)
@@ -820,7 +820,7 @@ CODE
  >> See https://www.dearimgui.org/faq for a fully detailed answer. You really want to read this.
 
  Q. How can I enable keyboard controls?
- Q: How can I use this without a mouse, without a keyboard or without a screen? (gamepad, input share, remote display)
+ Q: How can I use this without a mouse, without a keyboard or without a screen? (gamepad, input_ share, remote display)
  Q: I integrated Dear ImGui in my engine and little squares are showing instead of text...
  Q: I integrated Dear ImGui in my engine and some elements are clipping or disappearing when I move windows around...
  Q: I integrated Dear ImGui in my engine and some elements are displaying outside their expected windows boundaries...
@@ -847,7 +847,7 @@ CODE
  Q: How can I load a different font than the default?
  Q: How can I easily use icons in my application?
  Q: How can I load multiple fonts?
- Q: How can I display and input non-Latin characters such as Chinese, Japanese, Korean, Cyrillic?
+ Q: How can I display and input_ non-Latin characters such as Chinese, Japanese, Korean, Cyrillic?
  >> See https://www.dearimgui.org/faq and https://github.com/ocornut/imgui/edit/master/docs/FONTS.md
 
  Q&A: Concerns
@@ -1254,7 +1254,7 @@ ImGuiIO::ImGuiIO()
     BackendUsingLegacyNavInputArray = true; // assume using legacy array until proven wrong
 }
 
-// Pass in translated ASCII characters for text input.
+// Pass in translated ASCII characters for text input_.
 // - with glfw you can get those from the callback set in glfwSetCharCallback()
 // - on Windows you can get those using ToAscii+keyboard state, or via the WM_CHAR message
 // FIXME: Should in theory be called "AddCharacterEvent()" to be consistent with new API
@@ -2014,7 +2014,7 @@ void*   ImFileLoadToMemory(const char* filename, const char* mode, size_t* out_f
 
 IM_MSVC_RUNTIME_CHECKS_OFF
 
-// Convert UTF-8 to 32-bit character, process single character input.
+// Convert UTF-8 to 32-bit character, process single character input_.
 // A nearly-branchless UTF-8 decoder, based on work of Christopher Wellons (https://github.com/skeeto/branchless-utf8).
 // We handle UTF-8 decoding error by skipping forward.
 int ImTextCharFromUtf8(unsigned int* out_char, const char* in_text, const char* in_text_end)
@@ -2061,7 +2061,7 @@ int ImTextCharFromUtf8(unsigned int* out_char, const char* in_text, const char* 
         // No bytes are consumed when *in_text == 0 || in_text == in_text_end.
         // One byte is consumed in case of invalid first byte of in_text.
         // All available bytes (at most `len` bytes) are consumed on incomplete/invalid second to last bytes.
-        // Invalid or incomplete input may consume less bytes than wanted, therefore every byte has to be inspected in s.
+        // Invalid or incomplete input_ may consume less bytes than wanted, therefore every byte has to be inspected in s.
         wanted = ImMin(wanted, !!s[0] + !!s[1] + !!s[2] + !!s[3]);
         *out_char = IM_UNICODE_CODEPOINT_INVALID;
     }
@@ -4386,11 +4386,11 @@ void ImGui::NewFrame()
     g.FramerateSecPerFrameCount = ImMin(g.FramerateSecPerFrameCount + 1, IM_ARRAYSIZE(g.FramerateSecPerFrame));
     g.IO.Framerate = (g.FramerateSecPerFrameAccum > 0.0f) ? (1.0f / (g.FramerateSecPerFrameAccum / (float)g.FramerateSecPerFrameCount)) : FLT_MAX;
 
-    // Process input queue (trickle as many events as possible), turn events into writes to IO structure
+    // Process input_ queue (trickle as many events as possible), turn events into writes to IO structure
     g.InputEventsTrail.resize(0);
     UpdateInputEvents(g.IO.ConfigInputTrickleEventQueue);
 
-    // Update viewports (after processing input queue, so io.MouseHoveredViewport is set)
+    // Update viewports (after processing input_ queue, so io.MouseHoveredViewport is set)
     UpdateViewportsNewFrame();
 
     // Setup current font and draw list shared data
@@ -4512,7 +4512,7 @@ void ImGui::NewFrame()
     //if (g.IO.AppFocusLost)
     //    ClosePopupsExceptModals();
 
-    // Update keyboard input state
+    // Update keyboard input_ state
     UpdateKeyboardInputs();
 
     //IM_ASSERT(g.IO.KeyCtrl == IsKeyDown(ImGuiKey_LeftCtrl) || IsKeyDown(ImGuiKey_RightCtrl));
@@ -4523,14 +4523,14 @@ void ImGui::NewFrame()
     // Update gamepad/keyboard navigation
     NavUpdate();
 
-    // Update mouse input state
+    // Update mouse input_ state
     UpdateMouseInputs();
 
     // Find hovered window
     // (needs to be before UpdateMouseMovingWindowNewFrame so we fill g.HoveredWindowUnderMovingWindow on the mouse release frame)
     UpdateHoveredWindowAndCaptureFlags();
 
-    // Handle user moving window with mouse (at the beginning of the frame to avoid input lag or sheering)
+    // Handle user moving window with mouse (at the beginning of the frame to avoid input_ lag or sheering)
     UpdateMouseMovingWindowNewFrame();
 
     // Background darkening/whitening
@@ -5893,7 +5893,7 @@ void ImGui::RenderWindowDecorations(ImGuiWindow* window, const ImRect& title_bar
         if (window->ScrollbarY)
             Scrollbar(ImGuiAxis_Y);
 
-        // Render resize grips (after their input handling so we don't have a frame of latency)
+        // Render resize grips (after their input_ handling so we don't have a frame of latency)
         if (handle_borders_and_resize_grips && !(flags & ImGuiWindowFlags_NoResize))
         {
             for (int resize_grip_n = 0; resize_grip_n < resize_grip_count; resize_grip_n++)
@@ -6425,7 +6425,7 @@ bool ImGui::Begin(const char* name, bool* p_open, ImGuiWindowFlags flags)
             {
                 // Avoid focusing a window that is created outside of active modal. This will prevent active modal from being closed.
                 // Since window is not focused it would reappear at the same display position like the last time it was visible.
-                // In case of completely new windows it would go to the top (over current modal), but input to such window would still be blocked by modal.
+                // In case of completely new windows it would go to the top (over current modal), but input_ to such window would still be blocked by modal.
                 // Position window behind a modal that is not a begin-parent of this window.
                 want_focus = false;
                 if (window == window->RootWindow)
@@ -6938,7 +6938,7 @@ void ImGui::FocusTopMostWindowUnderOne(ImGuiWindow* under_this_window, ImGuiWind
     }
     for (int i = start_idx; i >= 0; i--)
     {
-        // We may later decide to test for different NoXXXInputs based on the active navigation input (mouse vs nav) but that may feel more confusing to the user.
+        // We may later decide to test for different NoXXXInputs based on the active navigation input_ (mouse vs nav) but that may feel more confusing to the user.
         ImGuiWindow* window = g.WindowsFocusOrder[i];
         IM_ASSERT(window == window->RootWindow);
         if (window != ignore_window && window->WasActive)
@@ -7948,7 +7948,7 @@ static int CalcRoutingScore(ImGuiWindow* location, ImGuiID owner_id, ImGuiInputF
         ImGuiWindow* focused = g.NavWindow;
 
         // ActiveID gets top priority
-        // (we don't check g.ActiveIdUsingAllKeys here. Routing is applied but if input ownership is tested later it may discard it)
+        // (we don't check g.ActiveIdUsingAllKeys here. Routing is applied but if input_ ownership is tested later it may discard it)
         if (owner_id != 0 && g.ActiveId == owner_id)
             return 1;
 
@@ -7979,7 +7979,7 @@ static int CalcRoutingScore(ImGuiWindow* location, ImGuiID owner_id, ImGuiInputF
     return 0;
 }
 
-// Request a desired route for an input chord (key + mods).
+// Request a desired route for an input_ chord (key + mods).
 // Return true if the route is available this frame.
 // - Routes and key ownership are attributed at the beginning of next frame based on best score and mod state.
 //   (Conceptually this does a "Submit for next frame" + "Test for current frame".
@@ -8171,7 +8171,7 @@ bool ImGui::IsMouseHoveringRect(const ImVec2& r_min, const ImVec2& r_max, bool c
     if (clip)
         rect_clipped.ClipWith(g.CurrentWindow->ClipRect);
 
-    // Expand for touch input
+    // Expand for touch input_
     const ImRect rect_for_touch(rect_clipped.Min - g.Style.TouchExtraPadding, rect_clipped.Max + g.Style.TouchExtraPadding);
     if (!rect_for_touch.Contains(g.IO.MousePos))
         return false;
@@ -8224,7 +8224,7 @@ bool ImGui::IsMousePosValid(const ImVec2* mouse_pos)
     return p.x >= MOUSE_INVALID && p.y >= MOUSE_INVALID;
 }
 
-// [WILL OBSOLETE] This was designed for backends, but prefer having backend maintain a mask of held mouse buttons, because upcoming input queue system will make this invalid.
+// [WILL OBSOLETE] This was designed for backends, but prefer having backend maintain a mask of held mouse buttons, because upcoming input_ queue system will make this invalid.
 bool ImGui::IsAnyMouseDown()
 {
     ImGuiContext& g = *GImGui;
@@ -8397,7 +8397,7 @@ static void ImGui::UpdateKeyboardInputs()
         key_data->DownDuration = key_data->Down ? (key_data->DownDuration < 0.0f ? 0.0f : key_data->DownDuration + io.DeltaTime) : -1.0f;
     }
 
-    // Update keys/input owner (named keys only): one entry per key
+    // Update keys/input_ owner (named keys only): one entry per key
     for (ImGuiKey key = ImGuiKey_NamedKey_BEGIN; key < ImGuiKey_NamedKey_END; key = (ImGuiKey)(key + 1))
     {
         ImGuiKeyData* key_data = &io.KeysData[key - ImGuiKey_KeysData_OFFSET];
@@ -8577,7 +8577,7 @@ void ImGui::UpdateMouseWheel()
 
     // Mouse wheel scrolling
     // As a standard behavior holding SHIFT while using Vertical Mouse Wheel triggers Horizontal scroll instead
-    // - We avoid doing it on OSX as it the OS input layer handles this already.
+    // - We avoid doing it on OSX as it the OS input_ layer handles this already.
     // - However this means when running on OSX over Emcripten, Shift+WheelY will incur two swappings (1 in OS, 1 here), cancelling the feature.
     const bool swap_axis = g.IO.KeyShift && !g.IO.ConfigMacOSXBehaviors;
     if (swap_axis)
@@ -8654,9 +8654,9 @@ static void DebugPrintInputEvent(const char* prefix, const ImGuiInputEvent* e)
 }
 #endif
 
-// Process input queue
+// Process input_ queue
 // We always call this with the value of 'bool g.IO.ConfigInputTrickleEventQueue'.
-// - trickle_fast_inputs = false : process all events, turn into flattened input state (e.g. successive down/up/down/up will be lost)
+// - trickle_fast_inputs = false : process all events, turn into flattened input_ state (e.g. successive down/up/down/up will be lost)
 // - trickle_fast_inputs = true  : process as many events as possible (successive down/up/down/up will be trickled over several frames so nothing is lost) (new feature in 1.87)
 void ImGui::UpdateInputEvents(bool trickle_fast_inputs)
 {
@@ -8822,7 +8822,7 @@ bool ImGui::TestKeyOwner(ImGuiKey key, ImGuiID owner_id)
     return true;
 }
 
-// _LockXXX flags are useful to lock keys away from code which is not input-owner aware.
+// _LockXXX flags are useful to lock keys away from code which is not input_-owner aware.
 // When using _LockXXX flags, you can use ImGuiKeyOwner_Any to lock keys from everyone.
 // - SetKeyOwner(..., None)              : clears owner
 // - SetKeyOwner(..., Any, !Lock)        : illegal (assert)
@@ -11097,7 +11097,7 @@ static void ImGui::NavUpdate()
     io.WantSetMousePos = false;
     //if (g.NavScoringDebugCount > 0) IMGUI_DEBUG_LOG_NAV("[nav] NavScoringDebugCount %d for '%s' layer %d (Init:%d, Move:%d)\n", g.NavScoringDebugCount, g.NavWindow ? g.NavWindow->Name : "NULL", g.NavLayer, g.NavInitRequest || g.NavInitResultId != 0, g.NavMoveRequest);
 
-    // Set input source based on which keys are last pressed (as some features differs when used with Gamepad vs Keyboard)
+    // Set input_ source based on which keys are last pressed (as some features differs when used with Gamepad vs Keyboard)
     // FIXME-NAV: Now that keys are separated maybe we can get rid of NavInputSource?
     const bool nav_gamepad_active = (io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad) != 0 && (io.BackendFlags & ImGuiBackendFlags_HasGamepad) != 0;
     const ImGuiKey nav_gamepad_keys_to_change_source[] = { ImGuiKey_GamepadFaceRight, ImGuiKey_GamepadFaceLeft, ImGuiKey_GamepadFaceUp, ImGuiKey_GamepadFaceDown, ImGuiKey_GamepadDpadRight, ImGuiKey_GamepadDpadLeft, ImGuiKey_GamepadDpadUp, ImGuiKey_GamepadDpadDown };
@@ -11147,7 +11147,7 @@ static void ImGui::NavUpdate()
     io.NavActive = (nav_keyboard_active || nav_gamepad_active) && g.NavWindow && !(g.NavWindow->Flags & ImGuiWindowFlags_NoNavInputs);
     io.NavVisible = (io.NavActive && g.NavId != 0 && !g.NavDisableHighlight) || (g.NavWindowingTarget != NULL);
 
-    // Process NavCancel input (to close a popup, get back to parent, clear focus)
+    // Process NavCancel input_ (to close a popup, get back to parent, clear focus)
     NavUpdateCancelRequest();
 
     // Process manual activation request
@@ -11501,7 +11501,7 @@ void ImGui::NavMoveRequestApplyResult()
         NavRestoreHighlightAfterMove();
 }
 
-// Process NavCancel input (to close a popup, get back to parent, clear focus)
+// Process NavCancel input_ (to close a popup, get back to parent, clear focus)
 // FIXME: In order to support e.g. Escape to clear a selection we'll need:
 // - either to store the equivalent of ActiveIdUsingKeyInputMask for a FocusScope and test for it.
 // - either to move most/all of those tests to the epilogue/end functions of the scope they are dealing with (e.g. exit child window in EndChild()) or in EndFrame(), to allow an earlier intercept
@@ -13095,7 +13095,7 @@ static void SetClipboardTextFn_DefaultImpl(void* user_data_ctx, const char* text
 
 static void SetPlatformImeDataFn_DefaultImpl(ImGuiViewport* viewport, ImGuiPlatformImeData* data)
 {
-    // Notify OS Input Method Editor of text input position
+    // Notify OS Input Method Editor of text input_ position
     HWND hwnd = (HWND)viewport->PlatformHandleRaw;
     if (hwnd == 0)
         return;
