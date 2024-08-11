@@ -3,7 +3,7 @@
 
 #include "memory"
 
-class GameScene : public BaseScene {
+class TitleScene : public BaseScene {
 
 public:
 
@@ -27,11 +27,4 @@ public:
 	/// </summary>
 	void Draw() override;
 
-private:
-
-	//音声データ
-	SoundData soundData_;
-
-	//3Dオブジェクト
-	std::unique_ptr<Object3D> ball_;
 };

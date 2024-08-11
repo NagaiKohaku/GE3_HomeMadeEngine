@@ -121,6 +121,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="scene\BaseScene.cpp" />
     <ClCompile Include="engine\base\Audio.cpp" />
     <ClCompile Include="engine\base\Camera.cpp" />
     <ClCompile Include="engine\base\DirectXCommon.cpp" />
@@ -154,8 +155,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="engine\math\Matrix.cpp" />
     <ClCompile Include="engine\base\ParticleEmitter.cpp" />
     <ClCompile Include="engine\math\Vector.cpp" />
+    <ClCompile Include="scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="scene\BaseScene.h" />
     <ClInclude Include="engine\base\Audio.h" />
     <ClInclude Include="engine\base\Camera.h" />
     <ClInclude Include="engine\base\DirectXCommon.h" />
@@ -189,6 +192,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="engine\base\FrameWork.h" />
     <ClInclude Include="engine\base\MyGame.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="scene\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

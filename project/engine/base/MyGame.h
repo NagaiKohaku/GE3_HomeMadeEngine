@@ -1,6 +1,8 @@
 #pragma once
 #include "FrameWork.h"
+#include "BaseScene.h"
 #include "GameScene.h"
+#include "TitleScene.h"
 
 #include "ModelManager.h"
 #include "ParticleManager.h"
@@ -40,7 +42,7 @@ public:
 private:
 
 	//ゲームシーン
-	GameScene* scene_ = nullptr;
+	BaseScene* scene_ = nullptr;
 
 	//カメラ
 	std::unique_ptr<Camera> camera_;

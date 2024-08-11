@@ -1,12 +1,6 @@
 #include "GameScene.h"
 
-#include "SpriteCommon.h"
-#include "Object3DCommon.h"
-#include "ModelManager.h"
-#include "ParticleManager.h"
-
 #include "numbers"
-#include "externals/imgui/imgui.h"
 
 void GameScene::Initialize() {
 
