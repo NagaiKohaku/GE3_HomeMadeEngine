@@ -1,48 +1,43 @@
 #pragma once
-#include "FrameWork.h"
-#include "GameScene.h"
-
-#include "ModelManager.h"
-#include "ParticleManager.h"
 
 #include "Sprite.h"
 #include "Object3D.h"
 #include "Model.h"
 #include "Camera.h"
 #include "ParticleEmitter.h"
+#include "Audio.h"
 
 #include "memory"
 
-class MyGame : public FrameWork {
+class GameScene {
 
 public:
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize() override;
+	void Initialize();
 
 	/// <summary>
 	/// 終了処理
 	/// </summary>
-	void Finalize() override;
+	void Finalize();
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update() override;
+	void Update();
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw() override;
+	void Draw();
 
 private:
 
-	//ゲームシーン
-	GameScene* scene_ = nullptr;
+	//音声データ
+	SoundData soundData_;
 
-	//カメラ
-	std::unique_ptr<Camera> camera_;
-
+	//3Dオブジェクト
+	std::unique_ptr<Object3D> ball_;
 };
