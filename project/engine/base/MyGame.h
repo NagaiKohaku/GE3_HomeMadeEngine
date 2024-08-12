@@ -41,9 +41,6 @@ public:
 
 private:
 
-	//ゲームシーン
-	BaseScene* scene_ = nullptr;
-
 	//カメラ
 	std::unique_ptr<Camera> camera_;
 

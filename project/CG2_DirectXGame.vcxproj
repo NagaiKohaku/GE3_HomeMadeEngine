@@ -121,6 +121,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="engine\base\SceneManager.cpp" />
     <ClCompile Include="scene\BaseScene.cpp" />
     <ClCompile Include="engine\base\Audio.cpp" />
     <ClCompile Include="engine\base\Camera.cpp" />
@@ -158,6 +159,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\base\SceneManager.h" />
     <ClInclude Include="scene\BaseScene.h" />
     <ClInclude Include="engine\base\Audio.h" />
     <ClInclude Include="engine\base\Camera.h" />

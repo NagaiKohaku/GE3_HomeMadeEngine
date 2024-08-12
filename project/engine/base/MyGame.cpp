@@ -23,11 +23,12 @@ void MyGame::Initialize() {
 	//3Dオブジェクトのカメラ情報を設定
 	object3DCommon_->SetDefaultCamera(camera_.get());
 
-	//ゲームシーンの生成
-	scene_ = new GameScene();
+	//最初のシーンの生成
+	BaseScene* scene = new TitleScene();
 
-	//ゲームシーンの初期化
-	scene_->Initialize();
+	//シーンマネージャーに最初のシーンをセット
+	sceneManager_->SetNextScene(scene);
+
 }
 
 void MyGame::Finalize() {
@@ -35,20 +36,15 @@ void MyGame::Finalize() {
 	//基底クラスの終了処理
 	FrameWork::Finalize();
 
-	//ゲームシーンの終了処理
-	scene_->Finalize();
-
-	//ゲームシーンの解放
-	delete scene_;
 }
 
 void MyGame::Update() {
 
-	//基底クラスの更新処理
-	FrameWork::Update();
-
 	//imguiの更新前処理
 	imGuiManager_->Begin();
+
+	//基底クラスの更新処理
+	FrameWork::Update();
 
 	//カメラの更新
 	camera_->DebugUpdate();
@@ -69,9 +65,6 @@ void MyGame::Update() {
 
 	}
 
-	//ゲームシーンのの更新
-	scene_->Update();
-
 	//ImGuiの終了
 	ImGui::End();
 
@@ -88,7 +81,7 @@ void MyGame::Draw() {
 	srvManager_->PreDraw();
 
 	//ゲームシーンの描画
-	scene_->Draw();
+	sceneManager_->Draw();
 
 	//imguiの描画処理
 	imGuiManager_->Draw();

@@ -1,12 +1,8 @@
 #include "TitleScene.h"
 
-#include "SpriteCommon.h"
-#include "Object3DCommon.h"
-#include "ModelManager.h"
-#include "ParticleManager.h"
+#include "SceneManager.h"
 
 #include "numbers"
-#include "externals/imgui/imgui.h"
 
 void TitleScene::Initialize() {
 }
@@ -15,6 +11,15 @@ void TitleScene::Finalize() {
 }
 
 void TitleScene::Update() {
+
+	if (Input::GetInstance()->IsTriggerPushKey(DIK_RETURN)) {
+
+		//ゲームシーンを生成
+		BaseScene* scene = new GameScene();
+
+		//シーン切り替え依頼
+		sceneManager_->SetNextScene(scene);
+	}
 }
 
 void TitleScene::Draw() {

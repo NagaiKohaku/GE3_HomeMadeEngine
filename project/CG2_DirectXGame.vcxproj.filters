@@ -177,6 +177,9 @@
     <ClCompile Include="scene\TitleScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
+    <ClCompile Include="engine\base\SceneManager.cpp">
+      <Filter>ソース ファイル\engine\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -269,9 +272,6 @@
     <ClInclude Include="engine\base\Audio.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
-    <ClInclude Include="engine\base\MyGame.h">
-      <Filter>ヘッダー ファイル\engine</Filter>
-    </ClInclude>
     <ClInclude Include="engine\base\FrameWork.h">
       <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
@@ -283,6 +283,12 @@
     </ClInclude>
     <ClInclude Include="scene\BaseScene.h">
       <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\MyGame.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\SceneManager.h">
+      <Filter>ヘッダー ファイル\engine\base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
