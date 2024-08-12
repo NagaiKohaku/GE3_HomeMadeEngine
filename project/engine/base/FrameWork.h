@@ -12,6 +12,7 @@
 #include "Audio.h"
 #include "Input.h"
 #include "SceneManager.h"
+#include "AbstractSceneFactory.h"
 
 class FrameWork {
 
@@ -85,8 +86,8 @@ public:
 	//ImGui管理
 	ImGuiManager* imGuiManager_ = nullptr;
 
-	//シーンマネージャー
-	SceneManager* sceneManager_ = nullptr;
+	//シーンファクトリー
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 private:
 

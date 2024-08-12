@@ -12,13 +12,11 @@ void TitleScene::Finalize() {
 
 void TitleScene::Update() {
 
+	//Enterキーが押されたら
 	if (Input::GetInstance()->IsTriggerPushKey(DIK_RETURN)) {
 
-		//ゲームシーンを生成
-		BaseScene* scene = new GameScene();
-
-		//シーン切り替え依頼
-		sceneManager_->SetNextScene(scene);
+		//ゲームシーンに切り替え
+		SceneManager::GetInstance()->ChangeScene("GAMESCENE");
 	}
 }
 

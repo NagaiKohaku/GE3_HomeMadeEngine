@@ -1,4 +1,5 @@
 #pragma once
+#include "AbstractSceneFactory.h"
 #include "BaseScene.h"
 #include "GameScene.h"
 #include "TitleScene.h"
@@ -31,10 +32,19 @@ public:
 	/// <summary>
 	/// 次シーン予約
 	/// </summary>
-	/// <param name="nextScene">次シーン</param>
-	void SetNextScene(BaseScene* nextScene) { nextScene_ = nextScene; }
+	/// <param name="sceneName">シーン名</param>
+	void ChangeScene(const std::string& sceneName);
+
+	/// <summary>
+	/// シーンファクトリーのセッター
+	/// </summary>
+	/// <param name="sceneFactory">シーンファクトリー</param>
+	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 private:
+
+	//シーンファクトリー(借り物)
+	AbstractSceneFactory* sceneFactory_ = nullptr;
 
 	//今のシーン
 	BaseScene* scene_ = nullptr;

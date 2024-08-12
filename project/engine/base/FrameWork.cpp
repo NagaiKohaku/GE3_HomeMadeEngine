@@ -58,14 +58,12 @@ void FrameWork::Initialize() {
 	//ModelManagerの初期化
 	ModelManager::GetInstance()->Initialize();
 
-	//シーンマネージャーの生成
-	sceneManager_ = new SceneManager();
 }
 
 void FrameWork::Finalize() {
 
-	//シーンマネージャーの解放
-	delete sceneManager_;
+	//シーンファクトリーの解放
+	delete sceneFactory_;
 
 	//xAudioの解放
 	audio_->Finalize();
@@ -90,7 +88,7 @@ void FrameWork::Update() {
 	input_->Update();
 
 	//シーンマネージャーの更新
-	sceneManager_->Update();
+	SceneManager::GetInstance()->Update();
 }
 
 void FrameWork::Run() {

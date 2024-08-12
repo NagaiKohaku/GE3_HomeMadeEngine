@@ -3,6 +3,7 @@
 #include "BaseScene.h"
 #include "GameScene.h"
 #include "TitleScene.h"
+#include "SceneFactory.h"
 
 #include "ModelManager.h"
 #include "ParticleManager.h"
