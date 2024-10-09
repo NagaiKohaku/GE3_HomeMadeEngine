@@ -9,7 +9,6 @@ ModelManager* ModelManager::GetInstance() {
 void ModelManager::Initialize() {
 
 	modelCommon_ = ModelCommon::GetInstance();
-
 }
 
 void ModelManager::LoadModel(const std::string& filePath) {
